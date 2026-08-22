@@ -107,9 +107,9 @@
                     <div class="patient-avatar">
 
                         {% if doctor.name %}
-                            {{ doctor.name[0]|upper }}
+                        {{ doctor.name[0]|upper }}
                         {% else %}
-                            D
+                        D
                         {% endif %}
 
                     </div>
@@ -148,9 +148,9 @@
 
                         <strong>
                             {% if doctor.verified %}
-                                Verified
+                            Verified
                             {% else %}
-                                Not verified
+                            Not verified
                             {% endif %}
                         </strong>
 
@@ -183,9 +183,9 @@
 
                 <div class="doctor-appointment-actions">
 
-                    <button class="btn btn-primary btn-sm">
-                        Manage Doctor
-                    </button>
+                    <a href="{{ url_for('edit_doctor', doctor_id=doctor.id) }}" class="admin-edit-btn">
+                        Edit
+                    </a>
 
                 </div>
 

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Doctor | WithUS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+
+        <a href="{{ url_for('admin_dashboard') }}" class="logo">
+            <span class="logo-mark">+</span>
+            WithUS
+        </a>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="btn btn-ghost">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}"
+               class="btn btn-primary">
+                Log out
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+
+<main class="admin-edit-section">
+
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="back-link">
+        ← Back to Admin Dashboard
+    </a>
+
+
+    <div class="admin-edit-card">
+
+        <div class="admin-edit-header">
+
+            <span class="eyebrow">
+                DOCTOR MANAGEMENT
+            </span>
+
+            <h1>Edit Doctor</h1>
+
+            <p>
+                Update the doctor's information and account status.
+            </p>
+
+        </div>
+
+
+        <form method="POST"
+              class="admin-doctor-form">
+
+
+            <!-- NAME -->
+
+            <div class="admin-form-group">
+
+                <label for="name">
+                    Doctor Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ doctor.name }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="admin-form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ doctor.email }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="admin-form-group">
+
+                <label for="phone">
+                    Phone
+                </label>
+
+                <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    value="{{ doctor.phone or '' }}"
+                >
+
+            </div>
+
+
+            <!-- SPECIALTY -->
+
+            <div class="admin-form-group">
+
+                <label for="specialty">
+                    Specialty
+                </label>
+
+                <input
+                    type="text"
+                    id="specialty"
+                    name="specialty"
+                    value="{{ doctor.specialty }}"
+                    required
+                >
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="admin-form-group">
+
+                <label for="is_active">
+                    Account Status
+                </label>
+
+                <select
+                    id="is_active"
+                    name="is_active"
+                >
+
+                    <option value="1"
+                        {% if doctor.is_active %}
+                            selected
+                        {% endif %}>
+                        Active
+                    </option>
+
+                    <option value="0"
+                        {% if not doctor.is_active %}
+                            selected
+                        {% endif %}>
+                        Inactive
+                    </option>
+
+                </select>
+
+                <small>
+                    Inactive doctors cannot log in or receive new appointments.
+                </small>
+
+            </div>
+
+
+            <!-- SERVICES -->
+
+            <div class="admin-form-group">
+
+                <label>
+                    Available Services
+                </label>
+
+                <div class="admin-checkbox-row">
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            name="offers_chat"
+                            value="1"
+                            {% if doctor.offers_chat %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>Chat</span>
+
+                    </label>
+
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            name="offers_voice"
+                            value="1"
+                            {% if doctor.offers_voice %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>Voice</span>
+
+                    </label>
+
+
+                    <label class="admin-checkbox">
+
+                        <input
+                            type="checkbox"
+                            name="offers_video"
+                            value="1"
+                            {% if doctor.offers_video %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>Video</span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- EXISTING DATA -->
+
+            <div class="admin-readonly-info">
+
+                <div>
+                    <span>Total Bookings</span>
+                    <strong>{{ doctor.booking_count }}</strong>
+                </div>
+
+                <div>
+                    <span>Rating</span>
+                    <strong>{{ doctor.rating }}</strong>
+                </div>
+
+                <div>
+                    <span>Tier</span>
+                    <strong>{{ doctor.tier|capitalize }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="admin-form-actions">
+
+                <a href="{{ url_for('admin_dashboard') }}"
+                   class="btn btn-ghost">
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Update Doctor
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -44,6 +44,7 @@ class Doctor(db.Model):
     verified = db.Column(db.Boolean, default=False)
     rating = db.Column(db.Numeric(2, 1), default=0.0)
     booking_count = db.Column(db.Integer, default=0)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     tier = db.Column(db.Enum('standard', 'premium'), default='standard')
     fee_per_session = db.Column(db.Numeric(6, 2), default=99.00)
     created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
@@ -95,6 +96,49 @@ class Payment(db.Model):
     payment_status = db.Column(db.Enum('pending', 'success', 'failed', 'refunded'), default='pending')
     paid_at = db.Column(db.TIMESTAMP, nullable=True)
 
+
+
+
+class ChatMessage(db.Model):
+    __tablename__ = 'chat_messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    appointment_id = db.Column(
+        db.Integer,
+        db.ForeignKey('appointments.id', ondelete='CASCADE'),
+        nullable=False
+    )
+
+    sender_type = db.Column(
+        db.String(20),
+        nullable=False
+    )
+
+    sender_id = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    message = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.TIMESTAMP,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    appointment = db.relationship(
+        'Appointment',
+        backref=db.backref(
+            'chat_messages',
+            lazy=True,
+            cascade='all, delete-orphan'
+        )
+    )
 
 class Review(db.Model):
     __tablename__ = 'reviews'
