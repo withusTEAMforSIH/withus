@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Payment — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="eyebrow">Almost there</span>
+    <h1>Complete your payment</h1>
+    <p class="page-lede">A quick, secure step before you're connected.</p>
+</section>
+
+<section class="booking-section">
+    <div class="booking-card">
+
+        <div class="booking-summary">
+            <div class="summary-row">
+                <span>Doctor</span>
+                <strong>{{ appointment.doctor.name }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Plan</span>
+                <strong>{{ appointment.plan.name }}</strong>
+            </div>
+            <div class="summary-row summary-row-total">
+                <span>Amount to pay</span>
+                <strong>₹{{ '%.0f'|format(payment.amount) }}</strong>
+            </div>
+        </div>
+
+        <hr class="booking-divider">
+
+        <form method="POST" action="{{ url_for('payment', payment_id=payment.id) }}">
+            <div class="payment-method-picker">
+                <label class="payment-method-option">
+                    <input type="radio" name="payment_method" value="upi" checked>
+                    <span>UPI</span>
+                </label>
+                <label class="payment-method-option">
+                    <input type="radio" name="payment_method" value="card">
+                    <span>Card</span>
+                </label>
+                <label class="payment-method-option">
+                    <input type="radio" name="payment_method" value="netbanking">
+                    <span>Netbanking</span>
+                </label>
+                <label class="payment-method-option">
+                    <input type="radio" name="payment_method" value="wallet">
+                    <span>Wallet</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg booking-confirm-btn">
+                Pay ₹{{ '%.0f'|format(payment.amount) }} →
+            </button>
+        </form>
+
+        <p class="booking-disclaimer">
+            This is a demo payment step — no real transaction is processed.
+        </p>
+    </div>
+</section>
+
+{% endblock %}

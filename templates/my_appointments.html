@@ -45,6 +45,14 @@
             <div class="appointment-price">₹{{ '%.0f'|format(appointment.plan.price) }}</div>
 
             <span class="status-badge status-{{ appointment.status }}">{{ appointment.status }}</span>
+
+            {% if appointment.status == 'completed' %}
+                {% if appointment.review %}
+                <span class="review-done">★ Reviewed</span>
+                {% else %}
+                <a href="{{ url_for('review', appointment_id=appointment.id) }}" class="review-link">Leave a review</a>
+                {% endif %}
+            {% endif %}
         </div>
         {% endfor %}
     </div>

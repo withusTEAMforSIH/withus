@@ -151,6 +151,19 @@
 
                 </div>
 
+                {% if appointment.status in ['booked', 'ongoing'] %}
+                <div class="doctor-appointment-actions">
+                    <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
+                        <input type="hidden" name="status" value="completed">
+                        <button type="submit" class="btn btn-primary btn-sm">Mark completed</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
+                        <input type="hidden" name="status" value="cancelled">
+                        <button type="submit" class="btn btn-ghost btn-sm">Cancel</button>
+                    </form>
+                </div>
+                {% endif %}
+
             </article>
 
             {% endfor %}

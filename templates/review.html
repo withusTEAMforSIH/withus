@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Leave a review — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="eyebrow">Your feedback</span>
+    <h1>How was your session?</h1>
+    <p class="page-lede">Your review helps others find the right doctor.</p>
+</section>
+
+<section class="auth-section">
+    <div class="auth-card">
+        <div class="booking-doctor">
+            <div class="doctor-photo">
+                {% if appointment.doctor.photo_url %}
+                    <img src="{{ appointment.doctor.photo_url }}" alt="{{ appointment.doctor.name }}">
+                {% else %}
+                    <span class="doctor-initial">{{ appointment.doctor.name[0] }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <h3>{{ appointment.doctor.name }}</h3>
+                <p class="doctor-specialty">{{ appointment.doctor.specialty }}</p>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('review', appointment_id=appointment.id) }}" class="auth-form">
+            <label>Rating</label>
+            <div class="star-rating">
+                {% for i in range(5, 0, -1) %}
+                <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if i == 5 %}checked{% endif %}>
+                <label for="star{{ i }}" class="star-label">★</label>
+                {% endfor %}
+            </div>
+
+            <label for="comment">Comment (optional)</label>
+            <textarea id="comment" name="comment" rows="4" placeholder="Tell us about your experience..."></textarea>
+
+            <button type="submit" class="btn btn-primary btn-lg auth-submit">Submit review →</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
