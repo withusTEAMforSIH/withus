@@ -109,14 +109,43 @@ def doctor_login():
         password = request.form['password']
 
         doctor = Doctor.query.filter_by(email=email).first()
-        if doctor and check_password_hash(doctor.password_hash, password):
-            session['doctor_id'] = doctor.id
-            return redirect(url_for('doctor_dashboard'))
 
-        flash('Invalid email or password.')
-        return redirect(url_for('doctor_login'))
+        if not doctor:
+            flash('Invalid email or password.')
+            return redirect(url_for('doctor_login'))
+
+        if not doctor.is_active:
+            flash('You are no longer part of this organisation.')
+            return redirect(url_for('doctor_login'))
+
+        if not check_password_hash(doctor.password_hash, password):
+            flash('Invalid email or password.')
+            return redirect(url_for('doctor_login'))
+
+        session['doctor_id'] = doctor.id
+        return redirect(url_for('doctor_dashboard'))
 
     return render_template('doctor_login.html')
+
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        admin = Admin.query.filter_by(email=email).first()
+
+        if admin and check_password_hash(admin.password_hash, password):
+            session.clear()
+            session['admin_id'] = admin.id
+            return redirect(url_for('admin_dashboard'))
+
+        flash('Invalid admin email or password.')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin_login.html')
 
 
 @app.route('/logout')
@@ -359,6 +388,23 @@ def update_appointment_status(appointment_id):
 def recompute_tiers():
     recompute_doctor_tiers()
     return redirect(url_for('plans'))
+
+
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+
+    admin = Admin.query.get_or_404(session['admin_id'])
+
+    doctors = Doctor.query.order_by(Doctor.created_at.desc()).all()
+
+    return render_template(
+        'admin_dashboard.html',
+        admin=admin,
+        doctors=doctors
+    )
 
 
 # ============================================

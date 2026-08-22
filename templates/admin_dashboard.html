@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="doctor-dashboard">
+
+    <div class="doctor-dashboard-header">
+
+        <div>
+            <span class="eyebrow eyebrow-doctor-dashboard">
+                Admin Panel
+            </span>
+
+            <h1>Welcome, {{ admin.name }}</h1>
+
+            <p>
+                Manage doctors and control who is available on the WithUS platform.
+            </p>
+        </div>
+
+        <div class="doctor-profile-mini">
+
+            <div class="doctor-profile-icon">
+                {{ admin.name[0]|upper }}
+            </div>
+
+            <div>
+                <strong>{{ admin.name }}</strong>
+                <span>Administrator</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="doctor-dashboard-stats">
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-label">
+                Total Doctors
+            </span>
+
+            <strong>
+                {{ doctors|length }}
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-label">
+                Verified Doctors
+            </span>
+
+            <strong>
+                {{ doctors|selectattr('verified', 'equalto', true)|list|length }}
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-label">
+                Active Doctors
+            </span>
+
+            <strong>
+                {{ doctors|length }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="doctor-appointments-section">
+
+        <div class="doctor-section-heading">
+
+            <span class="section-index doctor-section-index">
+                DOCTORS
+            </span>
+
+            <h2>Manage doctors</h2>
+
+            <p>
+                View and manage doctors currently registered on WithUS.
+            </p>
+
+        </div>
+
+
+        <div class="doctor-appointment-list">
+
+            {% for doctor in doctors %}
+
+            <div class="doctor-appointment-card">
+
+                <div class="doctor-appointment-main">
+
+                    <div class="patient-avatar">
+
+                        {% if doctor.name %}
+                            {{ doctor.name[0]|upper }}
+                        {% else %}
+                            D
+                        {% endif %}
+
+                    </div>
+
+                    <div class="patient-info">
+
+                        <h3>
+                            {{ doctor.name }}
+                        </h3>
+
+                        <span>
+                            {{ doctor.email }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="doctor-appointment-info">
+
+                    <div class="doctor-info-item">
+
+                        <span>Specialty</span>
+
+                        <strong>
+                            {{ doctor.specialty or 'Not specified' }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="doctor-info-item">
+
+                        <span>Status</span>
+
+                        <strong>
+                            {% if doctor.verified %}
+                                Verified
+                            {% else %}
+                                Not verified
+                            {% endif %}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="doctor-info-item">
+
+                        <span>Tier</span>
+
+                        <strong>
+                            {{ doctor.tier|capitalize }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="doctor-info-item">
+
+                        <span>Bookings</span>
+
+                        <strong>
+                            {{ doctor.booking_count }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="doctor-appointment-actions">
+
+                    <button class="btn btn-primary btn-sm">
+                        Manage Doctor
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <div class="doctor-empty-state">
+
+                <div class="doctor-empty-icon">
+                    +
+                </div>
+
+                <h3>No doctors yet</h3>
+
+                <p>
+                    Add doctors to begin managing the platform.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

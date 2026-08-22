@@ -4,118 +4,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{% block title %}WithUS — Private, judgment-free healthcare{% endblock %}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
+    <!-- ============================================
+         NAVBAR
+         ============================================ -->
+
     <header class="navbar">
+
         <div class="navbar-inner">
+
+            <!-- Logo -->
             <a href="{{ url_for('index') }}" class="logo">
-                <span class="logo-mark">+</span> WithUS
+                <span class="logo-mark">+</span>
+                WithUS
             </a>
 
+
+            <!-- Main Navigation -->
             <nav class="nav-links">
-                <a href="{{ url_for('index') }}#how-it-works">How it works</a>
-                <a href="{{ url_for('plans') }}">Plans</a>
-                <a href="{{ url_for('index') }}#why-us">Why us</a>
+
+                <a href="{{ url_for('index') }}#how-it-works">
+                    How it works
+                </a>
+
+                <a href="{{ url_for('plans') }}">
+                    Plans
+                </a>
+
+                <a href="{{ url_for('index') }}#why-us">
+                    Why us
+                </a>
+
+                <!-- Professionals dropdown -->
+                <div class="professional-menu">
+
+                    <button
+                        class="professional-trigger"
+                        id="professionalTrigger"
+                        type="button"
+                        aria-expanded="false"
+                        aria-haspopup="true">
+
+                        For professionals
+
+                        <span class="professional-chevron">⌄</span>
+
+                    </button>
+
+
+                    <div
+                        class="professional-dropdown"
+                        id="professionalDropdown">
+
+                        <a href="{{ url_for('doctor_login') }}"
+                           class="professional-option">
+
+                            <span class="professional-icon">
+                                +
+                            </span>
+
+                            <span>
+                                <strong>Doctor</strong>
+                                <small>Access your doctor dashboard</small>
+                            </span>
+
+                        </a>
+
+
+                        <a href="{{ url_for('admin_login') }}"
+                           class="professional-option">
+
+                            <span class="professional-icon admin-icon">
+                                ⚙
+                            </span>
+
+                            <span>
+                                <strong>Admin</strong>
+                                <small>Manage the WithUS platform</small>
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
             </nav>
 
+
+            <!-- Desktop Actions -->
             <div class="nav-actions">
-                {% if session.get('user_id') or session.get('doctor_id') %}
-                <a href="{{ url_for('my_appointments') }}" class="btn btn-ghost">My appointments</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-primary">Log out</a>
+
+                {% if session.get('user_id') %}
+
+                    <a href="{{ url_for('my_appointments') }}"
+                       class="btn btn-ghost">
+                        My appointments
+                    </a>
+
+                    <a href="{{ url_for('logout') }}"
+                       class="btn btn-primary">
+                        Log out
+                    </a>
+
+
+                {% elif session.get('doctor_id') %}
+
+                    <a href="{{ url_for('doctor_dashboard') }}"
+                       class="btn btn-ghost">
+                        Dashboard
+                    </a>
+
+                    <a href="{{ url_for('logout') }}"
+                       class="btn btn-primary">
+                        Log out
+                    </a>
+
+
+                {% elif session.get('admin_id') %}
+
+                    <a href="{{ url_for('admin_dashboard') }}"
+                       class="btn btn-ghost">
+                        Dashboard
+                    </a>
+
+                    <a href="{{ url_for('logout') }}"
+                       class="btn btn-primary">
+                        Log out
+                    </a>
+
+
                 {% else %}
-                <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
-                <a href="{{ url_for('signup') }}" class="btn btn-primary">Get started</a>
+
+                    <!-- Patient is the primary journey -->
+                    <a href="{{ url_for('login') }}"
+                       class="btn btn-ghost">
+                        Log in
+                    </a>
+
+                    <a href="{{ url_for('signup') }}"
+                       class="btn btn-primary">
+                        Get started
+                    </a>
+
                 {% endif %}
+
             </div>
 
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-                <span></span><span></span><span></span>
+
+            <!-- Mobile menu button -->
+            <button
+                class="nav-toggle"
+                id="navToggle"
+                aria-label="Toggle menu"
+                aria-expanded="false"
+                type="button">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
             </button>
+
         </div>
+
+
+        <!-- ============================================
+             MOBILE NAVIGATION
+             ============================================ -->
 
         <div class="nav-mobile" id="navMobile">
-            <a href="{{ url_for('index') }}#how-it-works">How it works</a>
-            <a href="{{ url_for('plans') }}">Plans</a>
-            <a href="{{ url_for('index') }}#why-us">Why us</a>
+
+            <a href="{{ url_for('index') }}#how-it-works">
+                How it works
+            </a>
+
+            <a href="{{ url_for('plans') }}">
+                Plans
+            </a>
+
+            <a href="{{ url_for('index') }}#why-us">
+                Why us
+            </a>
+
+
+            <div class="mobile-professionals">
+
+                <button
+                    class="mobile-professional-trigger"
+                    id="mobileProfessionalTrigger"
+                    type="button"
+                    aria-expanded="false">
+
+                    <span>For professionals</span>
+
+                    <span class="professional-chevron">
+                        ⌄
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="mobile-professional-links"
+                    id="mobileProfessionalLinks">
+
+                    <a href="{{ url_for('doctor_login') }}">
+                        <span class="mobile-professional-icon">+</span>
+                        Doctor Login
+                    </a>
+
+                    <a href="{{ url_for('admin_login') }}">
+                        <span class="mobile-professional-icon">⚙</span>
+                        Admin Login
+                    </a>
+
+                </div>
+
+            </div>
+
+
             <hr>
+
+
             {% if session.get('user_id') %}
-            <a href="{{ url_for('my_appointments') }}">My appointments</a>
-            <a href="{{ url_for('logout') }}">Log out</a>
+
+                <a href="{{ url_for('my_appointments') }}">
+                    My appointments
+                </a>
+
+                <a href="{{ url_for('logout') }}">
+                    Log out
+                </a>
+
+
+            {% elif session.get('doctor_id') %}
+
+                <a href="{{ url_for('doctor_dashboard') }}">
+                    Doctor dashboard
+                </a>
+
+                <a href="{{ url_for('logout') }}">
+                    Log out
+                </a>
+
+
+            {% elif session.get('admin_id') %}
+
+                <a href="{{ url_for('admin_dashboard') }}">
+                    Admin dashboard
+                </a>
+
+                <a href="{{ url_for('logout') }}">
+                    Log out
+                </a>
+
+
             {% else %}
-            <a href="{{ url_for('login') }}">Log in</a>
-            <a href="{{ url_for('signup') }}" class="btn btn-primary">Get started</a>
+
+                <a href="{{ url_for('login') }}">
+                    Log in
+                </a>
+
+                <a href="{{ url_for('signup') }}"
+                   class="btn btn-primary">
+                    Get started
+                </a>
+
             {% endif %}
+
         </div>
+
     </header>
 
+
+    <!-- ============================================
+         FLASH MESSAGES
+         ============================================ -->
+
     {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="flash-wrap">
-        {% for message in messages %}
-        <div class="flash">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
+
+        {% if messages %}
+
+            <div class="flash-wrap">
+
+                {% for message in messages %}
+
+                    <div class="flash">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
     {% endwith %}
 
+
+    <!-- ============================================
+         MAIN CONTENT
+         ============================================ -->
+
     <main>
+
         {% block content %}{% endblock %}
+
     </main>
 
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+
     <footer class="site-footer">
+
         <div class="footer-inner">
+
+
+            <!-- Brand -->
             <div class="footer-brand">
+
                 <a href="{{ url_for('index') }}" class="logo">
-                    <span class="logo-mark">+</span> WithUS
+
+                    <span class="logo-mark">+</span>
+                    WithUS
+
                 </a>
-                <p>A private first step into healthcare. Not a diagnosis tool, not a replacement for doctors — a trusted
-                    on-ramp into care.</p>
+
+                <p>
+                    A private first step into healthcare.
+                    Not a diagnosis tool, not a replacement for doctors —
+                    a trusted on-ramp into care.
+                </p>
+
             </div>
 
+
+            <!-- Product -->
             <div class="footer-col">
+
                 <h4>Product</h4>
-                <a href="{{ url_for('plans') }}">Plans</a>
-                <a href="{{ url_for('index') }}#how-it-works">How it works</a>
-                <a href="{{ url_for('index') }}#why-us">Why WithUS</a>
+
+                <a href="{{ url_for('plans') }}">
+                    Plans
+                </a>
+
+                <a href="{{ url_for('index') }}#how-it-works">
+                    How it works
+                </a>
+
+                <a href="{{ url_for('index') }}#why-us">
+                    Why WithUS
+                </a>
+
             </div>
 
+
+            <!-- Professionals -->
             <div class="footer-col">
+
+                <h4>For professionals</h4>
+
+                <a href="{{ url_for('doctor_login') }}">
+                    Doctor login
+                </a>
+
+                <a href="{{ url_for('admin_login') }}">
+                    Admin login
+                </a>
+
+                <a href="#">
+                    Professional support
+                </a>
+
+            </div>
+
+
+            <!-- Company -->
+            <div class="footer-col">
+
                 <h4>Company</h4>
-                <a href="{{ url_for('doctor_login') }}">For doctors</a>
-                <a href="#">Privacy policy</a>
-                <a href="#">Contact</a>
+
+                <a href="#">
+                    Privacy policy
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+                <a href="#">
+                    About WithUS
+                </a>
+
             </div>
 
-            <div class="footer-col footer-newsletter">
-                <h4>Stay in the loop</h4>
-                <p>Occasional updates, no spam.</p>
-                <form class="newsletter-form" onsubmit="return false;">
-                    <input type="email" placeholder="you@email.com" aria-label="Email address">
-                    <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
-            </div>
         </div>
 
+
+        <!-- Footer bottom -->
         <div class="footer-bottom">
-            <span>&copy; 2026 WithUS. All rights reserved.</span>
-            <span>Made for SIH — built with care.</span>
+
+            <span>
+                &copy; 2026 WithUS. All rights reserved.
+            </span>
+
+            <span>
+                Made for SIH — built with care.
+            </span>
+
         </div>
+
     </footer>
 
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
     {% block extra_js %}{% endblock %}
+
 </body>
 
 </html>

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+
+    <div class="auth-card auth-card-doctor">
+
+        <span class="eyebrow eyebrow-doctor">
+            Administration
+        </span>
+
+        <h1>Admin login</h1>
+
+        <p class="auth-lede">
+            Sign in to manage doctors, appointments and the WithUS platform.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('admin_login') }}"
+              class="auth-form">
+
+            <label for="email">Admin email</label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="admin@withus.com"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn btn-primary btn-lg auth-submit">
+                Login to Admin Panel →
+            </button>
+
+        </form>
+
+        <p class="auth-switch auth-switch-muted">
+            Are you a doctor?
+            <a href="{{ url_for('doctor_login') }}">
+                Doctor login
+            </a>
+        </p>
+
+        <p class="auth-switch auth-switch-muted">
+            Are you a patient?
+            <a href="{{ url_for('login') }}">
+                Patient login
+            </a>
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

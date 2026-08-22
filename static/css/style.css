@@ -235,6 +235,245 @@ img {
     display: flex;
 }
 
+
+
+
+/* ============================================
+   Professional Navigation
+   ============================================ */
+
+.professional-menu {
+    position: relative;
+}
+
+.professional-trigger {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    transition: color 0.2s ease;
+}
+
+.professional-trigger:hover {
+    color: var(--ink);
+}
+
+.professional-chevron {
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+}
+
+.professional-menu.open .professional-chevron {
+    transform: rotate(180deg);
+}
+
+
+/* Dropdown */
+
+.professional-dropdown {
+    position: absolute;
+    top: calc(100% + 18px);
+    right: 0;
+    width: 290px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    padding: 8px;
+
+    box-shadow: var(--shadow-lg);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0.18s ease;
+}
+
+.professional-menu.open .professional-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* Dropdown options */
+
+.professional-option {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 13px;
+
+    border-radius: 12px;
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
+
+.professional-option:hover {
+    background: var(--bg);
+    transform: translateX(2px);
+}
+
+.professional-option span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.professional-option strong {
+    color: var(--ink);
+    font-size: 0.9rem;
+}
+
+.professional-option small {
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+
+/* Icons */
+
+.professional-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.admin-icon {
+    background: var(--ink);
+    color: #fff;
+}
+
+
+/* ============================================
+   Mobile Professional Menu
+   ============================================ */
+
+.mobile-professionals {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-professional-trigger {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: none;
+    background: transparent;
+
+    padding: 0;
+
+    color: var(--ink);
+
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.mobile-professional-trigger .professional-chevron {
+    color: var(--muted);
+}
+
+.mobile-professionals.open .professional-chevron {
+    transform: rotate(180deg);
+}
+
+.mobile-professional-links {
+    display: none;
+    flex-direction: column;
+
+    gap: 4px;
+
+    margin-top: 10px;
+    padding-left: 8px;
+}
+
+.mobile-professionals.open .mobile-professional-links {
+    display: flex;
+}
+
+.mobile-professional-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.mobile-professional-links a:hover {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.mobile-professional-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+
+    border-radius: 8px;
+
+    font-family: var(--font-display);
+    font-weight: 800;
+}
+
+
+/* ============================================
+   Professional navbar on doctor dashboard
+   ============================================ */
+
+body:has(.doctor-dashboard) .professional-trigger {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+body:has(.doctor-dashboard) .professional-trigger:hover {
+    color: #fff;
+}
+
 /* ============================================
    Flash messages
    ============================================ */
