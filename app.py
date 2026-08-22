@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from models import db, User, Doctor, Plan, Appointment, Payment, Review
+from models import db, User, Admin, Doctor, Plan, Appointment, Payment, Review
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from dotenv import load_dotenv
