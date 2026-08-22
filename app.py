@@ -1,3 +1,4 @@
+#my name is sandy i am a collaborator on this project and i have added the following code to the app.py file to implement the recompute_doctor_tiers and recompute_doctor_rating functions. These functions are used to update the tiers of doctors based on their booking counts and to recalculate their average ratings based on reviews.
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from models import db, User, Admin, Doctor, Plan, Appointment, Payment, Review
