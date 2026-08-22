@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My appointments — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="eyebrow">Your history</span>
+    <h1>My appointments</h1>
+    <p class="page-lede">Everything you've booked, in one private place.</p>
+</section>
+
+<section class="appointments-section">
+    {% if appointments %}
+    <div class="appointments-list">
+        {% for appointment in appointments %}
+        <div class="appointment-row">
+            <div class="appointment-doctor">
+                <div class="doctor-photo appointment-photo">
+                    {% if appointment.doctor.photo_url %}
+                        <img src="{{ appointment.doctor.photo_url }}" alt="{{ appointment.doctor.name }}">
+                    {% else %}
+                        <span class="doctor-initial">{{ appointment.doctor.name[0] }}</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <h3>{{ appointment.doctor.name }}</h3>
+                    <p class="doctor-specialty">{{ appointment.doctor.specialty }}</p>
+                </div>
+            </div>
+
+            <div class="appointment-meta">
+                <span class="appointment-plan">{{ appointment.plan.name }}</span>
+                <span class="capitalize">{{ appointment.plan.mode }}</span>
+            </div>
+
+            <div class="appointment-date">
+                {% if appointment.scheduled_time %}
+                    {{ appointment.scheduled_time.strftime('%d %b %Y, %I:%M %p') }}
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+
+            <div class="appointment-price">₹{{ '%.0f'|format(appointment.plan.price) }}</div>
+
+            <span class="status-badge status-{{ appointment.status }}">{{ appointment.status }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <span class="empty-icon">📋</span>
+        <h3>No appointments yet</h3>
+        <p>When you book a doctor, it'll show up here.</p>
+        <a href="{{ url_for('plans') }}" class="btn btn-primary">Browse plans</a>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

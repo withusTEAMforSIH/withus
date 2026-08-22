@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="doctor-dashboard">
+
+    <div class="doctor-dashboard-header">
+
+        <div>
+            <span class="eyebrow eyebrow-doctor-dashboard">
+                DOCTOR PORTAL
+            </span>
+
+            <h1>
+                Welcome, Dr. {{ doctor.name }}
+            </h1>
+
+            <p>
+                Manage your upcoming appointments and patient consultations.
+            </p>
+        </div>
+
+        <div class="doctor-profile-mini">
+            <div class="doctor-profile-icon">
+                {{ doctor.name[0]|upper }}
+            </div>
+
+            <div>
+                <strong>Dr. {{ doctor.name }}</strong>
+                <span>{{ doctor.specialty }}</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="doctor-dashboard-stats">
+
+        <div class="doctor-stat-card">
+            <span class="doctor-stat-label">Total Appointments</span>
+            <strong>{{ appointments|length }}</strong>
+        </div>
+
+        <div class="doctor-stat-card">
+            <span class="doctor-stat-label">Upcoming</span>
+            <strong>
+                {{ appointments|selectattr('status', 'equalto', 'booked')|list|length }}
+            </strong>
+        </div>
+
+        <div class="doctor-stat-card">
+            <span class="doctor-stat-label">Specialty</span>
+            <strong class="doctor-specialty-stat">
+                {{ doctor.specialty }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="doctor-appointments-section">
+
+        <div class="doctor-section-heading">
+            <div>
+                <span class="section-index doctor-section-index">
+                    APPOINTMENTS
+                </span>
+
+                <h2>Your Appointment Queue</h2>
+
+                <p>
+                    Patients who have booked consultations with you.
+                </p>
+            </div>
+        </div>
+
+
+        {% if appointments %}
+
+        <div class="doctor-appointment-list">
+
+            {% for appointment in appointments %}
+
+            <article class="doctor-appointment-card">
+
+                <div class="doctor-appointment-main">
+
+                    <div class="patient-avatar">
+                        {{ appointment.user.name[0]|upper }}
+                    </div>
+
+                    <div class="patient-info">
+                        <h3>{{ appointment.user.name }}</h3>
+
+                        <span>
+                            Patient ID #{{ appointment.user.id }}
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="doctor-appointment-info">
+
+                    <div class="doctor-info-item">
+                        <span>Appointment</span>
+
+                        {% if appointment.scheduled_time %}
+                            <strong>
+                                {{ appointment.scheduled_time.strftime('%d %b %Y') }}
+                            </strong>
+                        {% else %}
+                            <strong>Not scheduled</strong>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="doctor-info-item">
+                        <span>Time</span>
+
+                        {% if appointment.scheduled_time %}
+                            <strong>
+                                {{ appointment.scheduled_time.strftime('%I:%M %p') }}
+                            </strong>
+                        {% else %}
+                            <strong>—</strong>
+                        {% endif %}
+                    </div>
+
+
+                    <div class="doctor-info-item">
+                        <span>Plan</span>
+
+                        <strong>
+                            {{ appointment.plan.name }}
+                        </strong>
+                    </div>
+
+
+                    <div class="doctor-info-item">
+                        <span>Status</span>
+
+                        <strong>
+                            <span class="status-badge status-{{ appointment.status }}">
+                                {{ appointment.status }}
+                            </span>
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="doctor-empty-state">
+
+            <div class="doctor-empty-icon">
+                ✓
+            </div>
+
+            <h3>No appointments yet</h3>
+
+            <p>
+                When patients book an appointment with you,
+                it will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

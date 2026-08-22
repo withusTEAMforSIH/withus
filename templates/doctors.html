@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Choose a doctor — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="eyebrow">Step 2 of 3</span>
+    <h1>
+        {% if plan.tier == 'premium' %}
+            Our most-preferred doctors
+        {% else %}
+            Available doctors
+        {% endif %}
+    </h1>
+    <p class="page-lede">
+        For <strong>{{ plan.name }}</strong> — ₹{{ '%.0f'|format(plan.price) }} ·
+        {{ plan.duration_minutes }} min · {{ plan.mode }}
+    </p>
+    <a href="{{ url_for('plans') }}" class="back-link">← Change plan</a>
+</section>
+
+<section class="doctors-section">
+    {% if doctors %}
+    <div class="doctors-grid">
+        {% for doctor in doctors %}
+        <div class="doctor-card {% if doctor.tier == 'premium' %}doctor-card-premium{% endif %}">
+            {% if doctor.tier == 'premium' %}
+            <span class="plan-tag plan-tag-premium doctor-badge">Popular</span>
+            {% endif %}
+
+            <div class="doctor-photo">
+                {% if doctor.photo_url %}
+                    <img src="{{ doctor.photo_url }}" alt="{{ doctor.name }}">
+                {% else %}
+                    <span class="doctor-initial">{{ doctor.name[0] }}</span>
+                {% endif %}
+            </div>
+
+            <h3>{{ doctor.name }}</h3>
+            <p class="doctor-specialty">{{ doctor.specialty }}</p>
+
+            <div class="doctor-meta">
+                <span class="doctor-rating">★ {{ doctor.rating }}</span>
+                {% if doctor.verified %}
+                <span class="doctor-verified">✓ Verified</span>
+                {% endif %}
+            </div>
+
+            <a href="{{ url_for('book', doctor_id=doctor.id, plan_id=plan.id) }}" class="btn btn-primary doctor-book-btn">Book this doctor →</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <span class="empty-icon">🩺</span>
+        <h3>No doctors available for this plan right now</h3>
+        <p>Try a different plan or check back shortly.</p>
+        <a href="{{ url_for('plans') }}" class="btn btn-ghost">Back to plans</a>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

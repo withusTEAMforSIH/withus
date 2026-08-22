@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Get started — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-card">
+        <span class="eyebrow">Get started</span>
+        <h1>Create your account</h1>
+        <p class="auth-lede">Takes less than a minute. Your details stay private.</p>
+
+        <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+            <div class="auth-row">
+                <div class="auth-col">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" placeholder="18" min="13" max="100">
+                </div>
+                <div class="auth-col">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender">
+                        <option value="other" selected>Prefer not to say</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg auth-submit">Create account →</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+
+        <p class="auth-switch auth-switch-muted">
+            Are you a doctor? <a href="{{ url_for('doctor_login') }}">Log in here</a>
+        </p>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Booking confirmed — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="confirmation-section">
+    <div class="confirmation-card">
+        <span class="confirmation-check">✓</span>
+        <span class="eyebrow">Booking confirmed</span>
+        <h1>You're all set.</h1>
+        <p class="confirmation-lede">
+            {{ appointment.doctor.name }} will see you shortly via
+            {{ appointment.plan.mode }}. Keep this page for reference.
+        </p>
+
+        <div class="confirmation-details">
+            <div class="summary-row">
+                <span>Doctor</span>
+                <strong>{{ appointment.doctor.name }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Specialty</span>
+                <strong>{{ appointment.doctor.specialty }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Plan</span>
+                <strong>{{ appointment.plan.name }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Mode</span>
+                <strong class="capitalize">{{ appointment.plan.mode }}</strong>
+            </div>
+            <div class="summary-row">
+                <span>Status</span>
+                <strong class="status-badge status-{{ appointment.status }}">{{ appointment.status }}</strong>
+            </div>
+            <div class="summary-row summary-row-total">
+                <span>Amount</span>
+                <strong>₹{{ '%.0f'|format(appointment.plan.price) }}</strong>
+            </div>
+        </div>
+
+        <div class="confirmation-actions">
+            <a href="{{ url_for('my_appointments') }}" class="btn btn-primary btn-lg">View my appointments →</a>
+            <a href="{{ url_for('plans') }}" class="btn btn-ghost">Book another</a>
+        </div>
+
+        <p class="booking-disclaimer">
+            Not a diagnosis tool. Not a replacement for emergency care.
+            Your conversation stays private and judgment-free.
+        </p>
+    </div>
+</section>
+
+{% endblock %}

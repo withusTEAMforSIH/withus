@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Plans — WithUS{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <span class="eyebrow">Step 1 of 3</span>
+    <h1>Choose your plan</h1>
+    <p class="page-lede">
+        Pick how you'd like to talk, and whether you want an available doctor
+        or one of our most-preferred doctors right now.
+    </p>
+</section>
+
+<section class="plans-tabs-section">
+    <div class="tier-toggle" id="tierToggle">
+        <button class="tier-btn active" data-tier="standard">Basic</button>
+        <button class="tier-btn" data-tier="premium">Premium</button>
+    </div>
+
+    <div class="tier-panel active" data-panel="standard">
+        <p class="tier-desc">Talk to any available, qualified doctor — fast and private.</p>
+
+        {% if standard_plans %}
+        <div class="plans-grid">
+            {% for plan in standard_plans %}
+            <div class="plan-tile">
+                <span class="plan-mode-icon">
+                    {% if plan.mode == 'chat' %}💬
+                    {% elif plan.mode == 'voice' %}🎙️
+                    {% else %}🎥{% endif %}
+                </span>
+                <h3>{{ plan.name }}</h3>
+                <p class="plan-price">₹{{ '%.0f'|format(plan.price) }}</p>
+                <p class="plan-duration">{{ plan.duration_minutes }} min · {{ plan.mode }}</p>
+                <p class="plan-desc">{{ plan.description }}</p>
+                <a href="{{ url_for('doctor_list', plan_id=plan.id) }}" class="btn btn-primary">Choose doctor →</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-note">No basic plans available right now.</p>
+        {% endif %}
+    </div>
+
+    <div class="tier-panel" data-panel="premium">
+        <p class="tier-desc">Talk to the doctors patients pick most — same privacy, higher demand, still a fair price.</p>
+
+        {% if premium_plans %}
+        <div class="plans-grid">
+            {% for plan in premium_plans %}
+            <div class="plan-tile plan-tile-premium">
+                <span class="plan-mode-icon">
+                    {% if plan.mode == 'chat' %}💬
+                    {% elif plan.mode == 'voice' %}🎙️
+                    {% else %}🎥{% endif %}
+                </span>
+                <span class="plan-tag plan-tag-premium">Popular</span>
+                <h3>{{ plan.name }}</h3>
+                <p class="plan-price">₹{{ '%.0f'|format(plan.price) }}</p>
+                <p class="plan-duration">{{ plan.duration_minutes }} min · {{ plan.mode }}</p>
+                <p class="plan-desc">{{ plan.description }}</p>
+                <a href="{{ url_for('doctor_list', plan_id=plan.id) }}" class="btn btn-primary">Choose doctor →</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-note">No premium plans available right now.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="reassurance-strip">
+    <div class="reassurance-item">
+        <span class="reassurance-icon">🔒</span>
+        <p>Private &amp; judgment-free</p>
+    </div>
+    <div class="reassurance-item">
+        <span class="reassurance-icon">✓</span>
+        <p>Verified, qualified doctors</p>
+    </div>
+    <div class="reassurance-item">
+        <span class="reassurance-icon">⚡</span>
+        <p>Talk in minutes, not weeks</p>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/plans.js') }}"></script>
+{% endblock %}
