@@ -20,21 +20,29 @@
 
     <div class="hero-visual">
         <div class="chat-mock">
+
             <div class="chat-mock-header">
                 <span class="dot"></span> Ask privately
             </div>
-            <div class="chat-bubble chat-bubble-user">
-                Is this something I should be worried about?
+
+            <div class="chat-mock-messages" id="chatMockMessages">
+                <div class="chat-bubble chat-bubble-doc">
+                    Hi — you can ask me anything privately. I'm not a doctor,
+                    but I can point you in the right direction.
+                </div>
             </div>
-            <div class="chat-bubble chat-bubble-doc typing" id="typingBubble">
-                <span class="dot-flash"></span>
-                <span class="dot-flash"></span>
-                <span class="dot-flash"></span>
-            </div>
-            <div class="chat-bubble chat-bubble-doc reveal" id="replyBubble">
-                It's understandable to have questions. Here's what you can
-                consider doing next.
-            </div>
+
+            <form id="chatMockForm" class="chat-mock-input-row">
+                <input type="text" id="chatMockInput" placeholder="Ask something privately..." maxlength="500"
+                    autocomplete="off" required>
+                <button type="submit" aria-label="Send">→</button>
+            </form>
+
+            <p class="chat-mock-disclaimer">
+                General guidance only — not a diagnosis.
+                <a href="{{ url_for('signup') }}">Talk to a real doctor →</a>
+            </p>
+
         </div>
     </div>
 </section>

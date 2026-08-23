@@ -1,4 +1,4 @@
-import os
+import os , anthropic
 from flask import Flask, render_template, request, redirect, url_for, session, flash , jsonify
 from flask_socketio import SocketIO, join_room, emit
 from models import db, User, Admin, Doctor, Plan, Appointment, Payment, Review ,ChatMessage
@@ -54,6 +54,110 @@ def recompute_doctor_rating(doctor):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+
+
+# ============================================
+# Homepage AI chatbot (public, pre-screening only)
+# ============================================
+
+anthropic_client = anthropic.Anthropic(
+    api_key=os.getenv('ANTHROPIC_API_KEY')
+)
+
+CHATBOT_SYSTEM_PROMPT = """You are the WithUS homepage assistant.
+
+WithUS is a private, judgment-free platform where people can chat, call,
+or video with a real doctor. You are NOT a doctor and this is NOT a
+diagnostic tool.
+
+Rules you must always follow:
+- Never diagnose a condition or claim something is or isn't serious.
+- Never recommend medications, dosages, or treatments.
+- Keep responses short (2-4 sentences), warm, and non-judgmental.
+- For anything specific to the person's body or symptoms, gently guide
+  them to book a real doctor on WithUS rather than trying to answer it
+  yourself.
+- You can answer general questions about how WithUS works (plans,
+  privacy, chat/voice/video, pricing starting at ₹99).
+- If the person seems to be in a medical emergency, tell them clearly
+  to contact local emergency services immediately.
+"""
+
+# Very basic in-memory rate limiting per session.
+# For production with multiple server workers, replace with Redis.
+from collections import defaultdict
+import time
+
+_chat_rate_limit = defaultdict(list)
+RATE_LIMIT_MAX_MESSAGES = 15
+RATE_LIMIT_WINDOW_SECONDS = 600  # 10 minutes
+
+
+@app.route('/api/chatbot', methods=['POST'])
+def chatbot():
+
+    data = request.get_json(silent=True) or {}
+    user_message = data.get('message', '').strip()
+    history = data.get('history', [])
+
+    if not user_message:
+        return jsonify({'error': 'Empty message'}), 400
+
+    if len(user_message) > 500:
+        return jsonify({'error': 'Message too long'}), 400
+
+    # Rate limit by session (Flask session cookie, works for anonymous visitors too)
+    if 'chat_session_id' not in session:
+        session['chat_session_id'] = os.urandom(8).hex()
+
+    session_id = session['chat_session_id']
+    now = time.time()
+
+    _chat_rate_limit[session_id] = [
+        t for t in _chat_rate_limit[session_id]
+        if now - t < RATE_LIMIT_WINDOW_SECONDS
+    ]
+
+    if len(_chat_rate_limit[session_id]) >= RATE_LIMIT_MAX_MESSAGES:
+        return jsonify({
+            'error': 'rate_limited',
+            'reply': "You've sent a lot of messages — please try again in a few minutes, or sign up to talk to a real doctor."
+        }), 429
+
+    _chat_rate_limit[session_id].append(now)
+
+    # Build message history for the API (cap length to keep cost/context sane)
+    api_messages = []
+    for turn in history[-6:]:
+        role = turn.get('role')
+        content = turn.get('content', '')
+        if role in ('user', 'assistant') and content:
+            api_messages.append({'role': role, 'content': content})
+
+    api_messages.append({'role': 'user', 'content': user_message})
+
+    try:
+        response = anthropic_client.messages.create(
+            model='claude-haiku-4-5-20251001',
+            max_tokens=200,
+            system=CHATBOT_SYSTEM_PROMPT,
+            messages=api_messages
+        )
+
+        reply_text = ''.join(
+            block.text for block in response.content if block.type == 'text'
+        )
+
+    except Exception as e:
+        app.logger.error(f'Chatbot API error: {e}')
+        return jsonify({
+            'error': 'api_error',
+            'reply': "Sorry, I'm having trouble responding right now. Please try again shortly."
+        }), 500
+
+    return jsonify({'reply': reply_text})    
 
 
 # ============================================

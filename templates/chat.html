@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Chat | WithUS{% endblock %}
 
-    <title>Chat | WithUS</title>
+{% block extra_css %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+{% endblock %}
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-</head>
-
-<body>
+{% block content %}
 
 <div class="chat-page">
 
     <div class="chat-container">
 
         <!-- Header -->
-
         <div class="chat-header">
 
             <div>
@@ -41,20 +33,12 @@
 
         </div>
 
-
         <!-- Messages -->
-
         <div class="chat-messages" id="chatMessages">
 
             {% for msg in messages %}
 
-                <div class="chat-message
-                    {% if msg.sender_type == current_user_type %}
-                        sent
-                    {% else %}
-                        received
-                    {% endif %}
-                ">
+                <div class="chat-message {% if msg.sender_type == current_user_type %}sent{% else %}received{% endif %}">
 
                     <div class="message-bubble">
                         {{ msg.message }}
@@ -70,9 +54,7 @@
 
         </div>
 
-
         <!-- Input -->
-
         <form id="chatForm" class="chat-input-area">
 
             <input
@@ -93,129 +75,62 @@
 
 </div>
 
+{% endblock %}
 
+{% block extra_js %}
 <script>
 
 const socket = io();
-
 const appointmentId = {{ appointment.id }};
-
 const currentUserType = "{{ current_user_type }}";
 
-const messagesContainer =
-    document.getElementById("chatMessages");
+const messagesContainer = document.getElementById("chatMessages");
+const messageInput = document.getElementById("messageInput");
+const chatForm = document.getElementById("chatForm");
 
-const messageInput =
-    document.getElementById("messageInput");
-
-const chatForm =
-    document.getElementById("chatForm");
-
-
-// Join appointment chat
-
-socket.emit("join_chat", {
-    appointment_id: appointmentId
-});
-
-
-// Receive new message
+socket.emit("join_chat", { appointment_id: appointmentId });
 
 socket.on("new_message", function(data) {
 
-    const messageWrapper =
-        document.createElement("div");
-
-    messageWrapper.classList.add(
-        "chat-message"
-    );
-
-    if (data.sender_type === currentUserType) {
-
-        messageWrapper.classList.add("sent");
-
-    } else {
-
-        messageWrapper.classList.add("received");
-
-    }
-
+    const messageWrapper = document.createElement("div");
+    messageWrapper.classList.add("chat-message");
+    messageWrapper.classList.add(data.sender_type === currentUserType ? "sent" : "received");
 
     messageWrapper.innerHTML = `
-
-        <div class="message-bubble">
-            ${escapeHtml(data.message)}
-        </div>
-
-        <span class="message-time">
-            ${data.created_at}
-        </span>
-
+        <div class="message-bubble">${escapeHtml(data.message)}</div>
+        <span class="message-time">${data.created_at}</span>
     `;
 
-    messagesContainer.appendChild(
-        messageWrapper
-    );
-
+    messagesContainer.appendChild(messageWrapper);
     scrollToBottom();
 });
 
-
-// Send message
-
 chatForm.addEventListener("submit", function(event) {
-
     event.preventDefault();
 
-    const message =
-        messageInput.value.trim();
-
-    if (!message) {
-        return;
-    }
+    const message = messageInput.value.trim();
+    if (!message) return;
 
     socket.emit("send_message", {
-
         appointment_id: appointmentId,
-
         message: message
-
     });
 
     messageInput.value = "";
-
     messageInput.focus();
-
 });
 
-
-// Keep latest messages visible
-
 function scrollToBottom() {
-
-    messagesContainer.scrollTop =
-        messagesContainer.scrollHeight;
-
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
-
-
-// Prevent HTML injection
 
 function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
+    const div = document.createElement("div");
     div.textContent = text;
-
     return div.innerHTML;
 }
-
 
 scrollToBottom();
 
 </script>
-
-</body>
-
-</html>
+{% endblock %}

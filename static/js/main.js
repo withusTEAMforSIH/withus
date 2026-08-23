@@ -195,3 +195,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+
+
+
+(function () {
+    const form = document.getElementById('chatMockForm');
+    if (!form) return; // not on this page
+
+    const input = document.getElementById('chatMockInput');
+    const messagesEl = document.getElementById('chatMockMessages');
+
+    let history = [];
+
+    function addBubble(text, sender) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-bubble');
+        bubble.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-doc');
+        bubble.textContent = text;
+        messagesEl.appendChild(bubble);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return bubble;
+    }
+
+    function addTypingBubble() {
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-bubble', 'chat-bubble-doc', 'typing');
+        bubble.innerHTML = `
+            <span class="dot-flash"></span>
+            <span class="dot-flash"></span>
+            <span class="dot-flash"></span>
+        `;
+        messagesEl.appendChild(bubble);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return bubble;
+    }
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        addBubble(message, 'user');
+        history.push({ role: 'user', content: message });
+
+        input.value = '';
+        input.disabled = true;
+
+        const typingBubble = addTypingBubble();
+
+        try {
+            const response = await fetch('/api/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message, history: history })
+            });
+
+            const data = await response.json();
+
+            typingBubble.remove();
+
+            if (!response.ok) {
+                addBubble(data.reply || 'Something went wrong. Please try again.', 'doc');
+                return;
+            }
+
+            addBubble(data.reply, 'doc');
+            history.push({ role: 'assistant', content: data.reply });
+
+        } catch (err) {
+            typingBubble.remove();
+            addBubble("Sorry, I couldn't connect. Please try again.", 'doc');
+            console.error(err);
+        } finally {
+            input.disabled = false;
+            input.focus();
+        }
+    });
+})();
