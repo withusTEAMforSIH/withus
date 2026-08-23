@@ -1,3 +1,4 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}My appointments — WithUS{% endblock %}
@@ -11,63 +12,170 @@
 </section>
 
 <section class="appointments-section">
+
     {% if appointments %}
+
     <div class="appointments-list">
+
         {% for appointment in appointments %}
+
         <div class="appointment-row">
+
+            <!-- Doctor -->
             <div class="appointment-doctor">
+
                 <div class="doctor-photo appointment-photo">
                     {% if appointment.doctor.photo_url %}
-                    <img src="{{ appointment.doctor.photo_url }}" alt="{{ appointment.doctor.name }}">
+                        <img
+                            src="{{ appointment.doctor.photo_url }}"
+                            alt="{{ appointment.doctor.name }}"
+                        >
                     {% else %}
-                    <span class="doctor-initial">{{ appointment.doctor.name[0] }}</span>
+                        <span class="doctor-initial">
+                            {{ appointment.doctor.name[0] }}
+                        </span>
                     {% endif %}
                 </div>
+
                 <div>
                     <h3>{{ appointment.doctor.name }}</h3>
-                    <p class="doctor-specialty">{{ appointment.doctor.specialty }}</p>
+                    <p class="doctor-specialty">
+                        {{ appointment.doctor.specialty }}
+                    </p>
                 </div>
+
             </div>
 
+
+            <!-- Plan information -->
             <div class="appointment-meta">
-                <span class="appointment-plan">{{ appointment.plan.name }}</span>
-                <span class="capitalize">{{ appointment.plan.mode }}</span>
+
+                <span class="appointment-plan">
+                    {{ appointment.plan.name }}
+                </span>
+
+                <span class="capitalize">
+                    {{ appointment.plan.mode }}
+                </span>
+
             </div>
 
-            <a href="{{ url_for('chat', appointment_id=appointment.id) }}" class="btn-chat">
-                Open Chat
+
+            <!-- Chat -->
+            <a
+                href="{{ url_for('chat', appointment_id=appointment.id) }}"
+                class="btn-chat"
+            >
+                💬 Open Chat
             </a>
 
+
+            <!-- Video / Voice calls -->
+            {% if appointment.status in ['booked', 'ongoing'] %}
+
+                <a
+                    href="{{ url_for('call', appointment_id=appointment.id, mode='video') }}"
+                    class="btn-call"
+                >
+                    🎥 Video Call
+                </a>
+
+                <a
+                    href="{{ url_for('call', appointment_id=appointment.id, mode='voice') }}"
+                    class="btn-call-voice"
+                >
+                    📞 Voice Call
+                </a>
+
+            {% else %}
+
+                <span class="call-unavailable">
+                    Calls unavailable
+                </span>
+
+            {% endif %}
+
+
+            <!-- Appointment date -->
             <div class="appointment-date">
+
                 {% if appointment.scheduled_time %}
-                {{ appointment.scheduled_time.strftime('%d %b %Y, %I:%M %p') }}
+
+                    {{ appointment.scheduled_time.strftime('%d %b %Y, %I:%M %p') }}
+
                 {% else %}
-                —
+
+                    —
+
                 {% endif %}
+
             </div>
 
-            <div class="appointment-price">₹{{ '%.0f'|format(appointment.plan.price) }}</div>
 
-            <span class="status-badge status-{{ appointment.status }}">{{ appointment.status }}</span>
+            <!-- Price -->
+            <div class="appointment-price">
+                ₹{{ '%.0f'|format(appointment.plan.price) }}
+            </div>
 
+
+            <!-- Status -->
+            <span class="status-badge status-{{ appointment.status }}">
+                {{ appointment.status }}
+            </span>
+
+
+            <!-- Review -->
             {% if appointment.status == 'completed' %}
-            {% if appointment.review %}
-            <span class="review-done">★ Reviewed</span>
-            {% else %}
-            <a href="{{ url_for('review', appointment_id=appointment.id) }}" class="review-link">Leave a review</a>
+
+                {% if appointment.review %}
+
+                    <span class="review-done">
+                        ★ Reviewed
+                    </span>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('review', appointment_id=appointment.id) }}"
+                        class="review-link"
+                    >
+                        Leave a review
+                    </a>
+
+                {% endif %}
+
             {% endif %}
-            {% endif %}
+
         </div>
+
         {% endfor %}
+
     </div>
+
     {% else %}
+
     <div class="empty-state">
+
         <span class="empty-icon">📋</span>
+
         <h3>No appointments yet</h3>
-        <p>When you book a doctor, it'll show up here.</p>
-        <a href="{{ url_for('plans') }}" class="btn btn-primary">Browse plans</a>
+
+        <p>
+            When you book a doctor, it'll show up here.
+        </p>
+
+        <a
+            href="{{ url_for('plans') }}"
+            class="btn btn-primary"
+        >
+            Browse plans
+        </a>
+
     </div>
+
     {% endif %}
+
 </section>
 
 {% endblock %}
+```

@@ -43,6 +43,10 @@ def recompute_doctor_rating(doctor):
     db.session.commit()
 
 
+
+    
+
+
 # ============================================
 # Public pages
 # ============================================
@@ -597,6 +601,59 @@ def edit_doctor(doctor_id):
 
 
 
+# ============================================
+# Voice/Video Call
+# ============================================
+
+@app.route('/call/<int:appointment_id>')
+def call(appointment_id):
+
+    if 'user_id' not in session and 'doctor_id' not in session:
+        return redirect(url_for('login'))
+
+    appointment = Appointment.query.get_or_404(appointment_id)
+
+    if appointment.status not in ('booked', 'ongoing'):
+        flash('This call is not available for this appointment.')
+        if 'user_id' in session:
+            return redirect(url_for('my_appointments'))
+        return redirect(url_for('doctor_dashboard'))
+
+    # Patient access
+    if 'user_id' in session:
+
+        if appointment.user_id != session['user_id']:
+            flash('You are not authorized to access this call.')
+            return redirect(url_for('my_appointments'))
+
+        current_user_type = 'user'
+        current_user_id = session['user_id']
+
+    # Doctor access
+    else:
+
+        if appointment.doctor_id != session['doctor_id']:
+            flash('You are not authorized to access this call.')
+            return redirect(url_for('doctor_dashboard'))
+
+        current_user_type = 'doctor'
+        current_user_id = session['doctor_id']
+
+    mode = request.args.get('mode', 'video')
+    if mode not in ('video', 'voice'):
+        mode = 'video'
+
+    return render_template(
+        'call.html',
+        appointment=appointment,
+        current_user_type=current_user_type,
+        current_user_id=current_user_id,
+        mode=mode
+    )
+
+
+
+
 @socketio.on('join_chat')
 def handle_join_chat(data):
 
@@ -711,6 +768,125 @@ def not_found(e):
 def server_error(e):
     db.session.rollback()
     return render_template('500.html'), 500
+
+
+
+# ============================================
+# Call signaling
+# ============================================
+
+def _authorize_call(appointment_id):
+    """Returns (appointment, sender_type, sender_id) or (None, None, None) if unauthorized."""
+
+    appointment = Appointment.query.get(appointment_id)
+    if not appointment:
+        return None, None, None
+
+    if appointment.status not in ('booked', 'ongoing'):
+        return None, None, None
+
+    if 'user_id' in session:
+        if appointment.user_id != session['user_id']:
+            return None, None, None
+        return appointment, 'user', session['user_id']
+
+    elif 'doctor_id' in session:
+        if appointment.doctor_id != session['doctor_id']:
+            return None, None, None
+        return appointment, 'doctor', session['doctor_id']
+
+    return None, None, None
+
+
+@socketio.on('call_join')
+def handle_call_join(data):
+
+    appointment_id = data.get('appointment_id')
+    if not appointment_id:
+        return
+
+    appointment, sender_type, sender_id = _authorize_call(appointment_id)
+    if not appointment:
+        return
+
+    room = f'call_{appointment_id}'
+    join_room(room)
+
+    # Tell whoever is already in the room that a new peer joined
+    emit(
+        'call_peer_joined',
+        {'sender_type': sender_type},
+        to=room,
+        include_self=False
+    )
+
+
+@socketio.on('call_offer')
+def handle_call_offer(data):
+
+    appointment_id = data.get('appointment_id')
+    appointment, sender_type, sender_id = _authorize_call(appointment_id)
+    if not appointment:
+        return
+
+    room = f'call_{appointment_id}'
+    emit(
+        'call_offer',
+        {'sdp': data.get('sdp'), 'sender_type': sender_type},
+        to=room,
+        include_self=False
+    )
+
+
+@socketio.on('call_answer')
+def handle_call_answer(data):
+
+    appointment_id = data.get('appointment_id')
+    appointment, sender_type, sender_id = _authorize_call(appointment_id)
+    if not appointment:
+        return
+
+    room = f'call_{appointment_id}'
+    emit(
+        'call_answer',
+        {'sdp': data.get('sdp'), 'sender_type': sender_type},
+        to=room,
+        include_self=False
+    )
+
+
+@socketio.on('call_ice_candidate')
+def handle_call_ice_candidate(data):
+
+    appointment_id = data.get('appointment_id')
+    appointment, sender_type, sender_id = _authorize_call(appointment_id)
+    if not appointment:
+        return
+
+    room = f'call_{appointment_id}'
+    emit(
+        'call_ice_candidate',
+        {'candidate': data.get('candidate'), 'sender_type': sender_type},
+        to=room,
+        include_self=False
+    )
+
+
+@socketio.on('call_end')
+def handle_call_end(data):
+
+    appointment_id = data.get('appointment_id')
+    appointment, sender_type, sender_id = _authorize_call(appointment_id)
+    if not appointment:
+        return
+
+    room = f'call_{appointment_id}'
+    emit(
+        'call_ended',
+        {'sender_type': sender_type},
+        to=room,
+        include_self=False
+    )
 
 
 

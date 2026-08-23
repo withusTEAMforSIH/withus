@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Call | WithUS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+
+<body>
+
+<div class="call-page">
+
+    <div class="call-container">
+
+        <div class="call-header">
+            <h2>
+                {% if current_user_type == 'user' %}
+                    Call with Dr. {{ appointment.doctor.name }}
+                {% else %}
+                    Call with {{ appointment.user.name }}
+                {% endif %}
+            </h2>
+            <div class="call-status" id="callStatus">Connecting...</div>
+        </div>
+
+        <div class="video-grid">
+            <video id="remoteVideo" autoplay playsinline></video>
+            <video id="localVideo" autoplay playsinline muted></video>
+        </div>
+
+        <div class="call-controls">
+            <button id="toggleMic" type="button">Mute</button>
+            <button id="toggleCam" type="button">
+                {% if mode == 'voice' %}Turn Camera On{% else %}Turn Camera Off{% endif %}
+            </button>
+            <button id="endCall" type="button" class="btn-end-call">End Call</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const socket = io();
+
+const appointmentId = {{ appointment.id }};
+const currentUserType = "{{ current_user_type }}";
+let cameraOn = {{ 'true' if mode == 'video' else 'false' }};
+let micOn = true;
+
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
+const callStatus = document.getElementById('callStatus');
+const toggleMicBtn = document.getElementById('toggleMic');
+const toggleCamBtn = document.getElementById('toggleCam');
+const endCallBtn = document.getElementById('endCall');
+
+let localStream = null;
+let peerConnection = null;
+let remotePeerPresent = false;
+let isCallInitiator = false;
+
+const rtcConfig = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' }
+    ]
+};
+
+async function init() {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: cameraOn
+        });
+        localVideo.srcObject = localStream;
+    } catch (err) {
+        callStatus.textContent = 'Could not access camera/microphone.';
+        console.error(err);
+        return;
+    }
+
+    socket.emit('call_join', { appointment_id: appointmentId });
+}
+
+function createPeerConnection() {
+    peerConnection = new RTCPeerConnection(rtcConfig);
+
+    localStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, localStream);
+    });
+
+    peerConnection.ontrack = (event) => {
+        remoteVideo.srcObject = event.streams[0];
+        callStatus.textContent = 'Connected';
+    };
+
+    peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+            socket.emit('call_ice_candidate', {
+                appointment_id: appointmentId,
+                candidate: event.candidate
+            });
+        }
+    };
+
+    peerConnection.onconnectionstatechange = () => {
+        if (peerConnection.connectionState === 'disconnected' ||
+            peerConnection.connectionState === 'failed') {
+            callStatus.textContent = 'Call disconnected';
+        }
+    };
+}
+
+socket.on('call_peer_joined', async (data) => {
+    remotePeerPresent = true;
+    callStatus.textContent = 'Peer joined, connecting...';
+
+    // The first person in the room initiates the offer once the second joins
+    isCallInitiator = true;
+    createPeerConnection();
+
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+
+    socket.emit('call_offer', {
+        appointment_id: appointmentId,
+        sdp: offer
+    });
+});
+
+socket.on('call_offer', async (data) => {
+    if (data.sender_type === currentUserType) return;
+
+    if (!peerConnection) {
+        createPeerConnection();
+    }
+
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+
+    socket.emit('call_answer', {
+        appointment_id: appointmentId,
+        sdp: answer
+    });
+});
+
+socket.on('call_answer', async (data) => {
+    if (data.sender_type === currentUserType) return;
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+});
+
+socket.on('call_ice_candidate', async (data) => {
+    if (data.sender_type === currentUserType) return;
+    try {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+    } catch (err) {
+        console.error('Error adding ICE candidate', err);
+    }
+});
+
+socket.on('call_ended', () => {
+    callStatus.textContent = 'Other participant left the call.';
+    cleanupCall();
+});
+
+toggleMicBtn.addEventListener('click', () => {
+    micOn = !micOn;
+    localStream.getAudioTracks().forEach(track => track.enabled = micOn);
+    toggleMicBtn.textContent = micOn ? 'Mute' : 'Unmute';
+});
+
+toggleCamBtn.addEventListener('click', async () => {
+    cameraOn = !cameraOn;
+
+    if (cameraOn) {
+        const videoTrack = (await navigator.mediaDevices.getUserMedia({ video: true })).getVideoTracks()[0];
+        localStream.addTrack(videoTrack);
+        localVideo.srcObject = localStream;
+        if (peerConnection) {
+            peerConnection.addTrack(videoTrack, localStream);
+        }
+        toggleCamBtn.textContent = 'Turn Camera Off';
+    } else {
+        localStream.getVideoTracks().forEach(track => {
+            track.stop();
+            localStream.removeTrack(track);
+        });
+        toggleCamBtn.textContent = 'Turn Camera On';
+    }
+});
+
+endCallBtn.addEventListener('click', () => {
+    socket.emit('call_end', { appointment_id: appointmentId });
+    cleanupCall();
+    window.location.href = "{{ url_for('my_appointments') if current_user_type == 'user' else url_for('doctor_dashboard') }}";
+});
+
+function cleanupCall() {
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+}
+
+window.addEventListener('beforeunload', () => {
+    socket.emit('call_end', { appointment_id: appointmentId });
+    cleanupCall();
+});
+
+init();
+
+</script>
+
+</body>
+
+</html>

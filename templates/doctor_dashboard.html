@@ -153,6 +153,14 @@
                         Open Chat
                     </a>
 
+
+                    <a href="{{ url_for('call', appointment_id=appointment.id, mode='video') }}" class="btn-call">
+                        Join Video Call
+                    </a>
+                    <a href="{{ url_for('call', appointment_id=appointment.id, mode='voice') }}" class="btn-call-voice">
+                        Join Voice Call
+                    </a>
+
                 </div>
 
                 {% if appointment.status in ['booked', 'ongoing'] %}
