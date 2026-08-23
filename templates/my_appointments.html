@@ -18,9 +18,9 @@
             <div class="appointment-doctor">
                 <div class="doctor-photo appointment-photo">
                     {% if appointment.doctor.photo_url %}
-                        <img src="{{ appointment.doctor.photo_url }}" alt="{{ appointment.doctor.name }}">
+                    <img src="{{ appointment.doctor.photo_url }}" alt="{{ appointment.doctor.name }}">
                     {% else %}
-                        <span class="doctor-initial">{{ appointment.doctor.name[0] }}</span>
+                    <span class="doctor-initial">{{ appointment.doctor.name[0] }}</span>
                     {% endif %}
                 </div>
                 <div>
@@ -34,11 +34,15 @@
                 <span class="capitalize">{{ appointment.plan.mode }}</span>
             </div>
 
+            <a href="{{ url_for('chat', appointment_id=appointment.id) }}" class="btn-chat">
+                Open Chat
+            </a>
+
             <div class="appointment-date">
                 {% if appointment.scheduled_time %}
-                    {{ appointment.scheduled_time.strftime('%d %b %Y, %I:%M %p') }}
+                {{ appointment.scheduled_time.strftime('%d %b %Y, %I:%M %p') }}
                 {% else %}
-                    —
+                —
                 {% endif %}
             </div>
 
@@ -47,11 +51,11 @@
             <span class="status-badge status-{{ appointment.status }}">{{ appointment.status }}</span>
 
             {% if appointment.status == 'completed' %}
-                {% if appointment.review %}
-                <span class="review-done">★ Reviewed</span>
-                {% else %}
-                <a href="{{ url_for('review', appointment_id=appointment.id) }}" class="review-link">Leave a review</a>
-                {% endif %}
+            {% if appointment.review %}
+            <span class="review-done">★ Reviewed</span>
+            {% else %}
+            <a href="{{ url_for('review', appointment_id=appointment.id) }}" class="review-link">Leave a review</a>
+            {% endif %}
             {% endif %}
         </div>
         {% endfor %}

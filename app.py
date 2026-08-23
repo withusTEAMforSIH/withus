@@ -476,6 +476,65 @@ def admin_dashboard():
     )
 
 
+
+@app.route('/admin/doctors/add', methods=['GET', 'POST'])
+def add_doctor():
+
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+        specialty = request.form.get('specialty', '').strip()
+        fee_per_session = request.form.get('fee_per_session', '99.00').strip()
+
+        offers_chat = request.form.get('offers_chat') == '1'
+        offers_voice = request.form.get('offers_voice') == '1'
+        offers_video = request.form.get('offers_video') == '1'
+        is_active = request.form.get('is_active') == '1'
+
+        # Basic validation
+        if not name or not email or not password or not specialty:
+            flash('Name, email, password and specialty are required.')
+            return redirect(url_for('add_doctor'))
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.')
+            return redirect(url_for('add_doctor'))
+
+        existing_doctor = Doctor.query.filter_by(email=email).first()
+        if existing_doctor:
+            flash('A doctor with this email already exists.')
+            return redirect(url_for('add_doctor'))
+
+        try:
+            fee_value = float(fee_per_session)
+        except ValueError:
+            fee_value = 99.00
+
+        new_doctor = Doctor(
+            name=name,
+            email=email,
+            password_hash=generate_password_hash(password),
+            specialty=specialty,
+            fee_per_session=fee_value,
+            is_active=is_active,
+            offers_chat=offers_chat,
+            offers_voice=offers_voice,
+            offers_video=offers_video
+        )
+
+        db.session.add(new_doctor)
+        db.session.commit()
+
+        flash(f'Dr. {new_doctor.name} was created. They can now log in with the email and password you set.')
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('add_doctor.html')
+
 @app.route('/admin/doctors/<int:doctor_id>/edit', methods=['GET', 'POST'])
 def edit_doctor(doctor_id):
 

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Doctor | WithUS Admin</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="admin-page">
+
+    <div class="admin-form-container">
+
+        <h2>Add New Doctor</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <label for="name">Doctor Name *</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" minlength="6" required>
+
+            <label for="specialty">Specialty *</label>
+            <input type="text" id="specialty" name="specialty" required>
+
+            <label for="fee_per_session">Fee per Session *</label>
+            <input type="number" step="0.01" id="fee_per_session" name="fee_per_session" value="99.00" required>
+
+            <fieldset>
+                <legend>Services</legend>
+
+                <label>
+                    <input type="checkbox" name="offers_chat" value="1" checked>
+                    Chat
+                </label>
+
+                <label>
+                    <input type="checkbox" name="offers_voice" value="1" checked>
+                    Voice
+                </label>
+
+                <label>
+                    <input type="checkbox" name="offers_video" value="1" checked>
+                    Video
+                </label>
+            </fieldset>
+
+            <label>
+                <input type="checkbox" name="is_active" value="1" checked>
+                Active
+            </label>
+
+            <div class="form-actions">
+                <a href="{{ url_for('admin_dashboard') }}">Cancel</a>
+                <button type="submit">Create Doctor</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

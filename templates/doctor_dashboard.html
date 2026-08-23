@@ -108,11 +108,11 @@
                         <span>Appointment</span>
 
                         {% if appointment.scheduled_time %}
-                            <strong>
-                                {{ appointment.scheduled_time.strftime('%d %b %Y') }}
-                            </strong>
+                        <strong>
+                            {{ appointment.scheduled_time.strftime('%d %b %Y') }}
+                        </strong>
                         {% else %}
-                            <strong>Not scheduled</strong>
+                        <strong>Not scheduled</strong>
                         {% endif %}
                     </div>
 
@@ -121,11 +121,11 @@
                         <span>Time</span>
 
                         {% if appointment.scheduled_time %}
-                            <strong>
-                                {{ appointment.scheduled_time.strftime('%I:%M %p') }}
-                            </strong>
+                        <strong>
+                            {{ appointment.scheduled_time.strftime('%I:%M %p') }}
+                        </strong>
                         {% else %}
-                            <strong>—</strong>
+                        <strong>—</strong>
                         {% endif %}
                     </div>
 
@@ -149,15 +149,21 @@
                         </strong>
                     </div>
 
+                    <a href="{{ url_for('chat', appointment_id=appointment.id) }}" class="btn-chat">
+                        Open Chat
+                    </a>
+
                 </div>
 
                 {% if appointment.status in ['booked', 'ongoing'] %}
                 <div class="doctor-appointment-actions">
-                    <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
+                    <form method="POST"
+                        action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
                         <input type="hidden" name="status" value="completed">
                         <button type="submit" class="btn btn-primary btn-sm">Mark completed</button>
                     </form>
-                    <form method="POST" action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
+                    <form method="POST"
+                        action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}">
                         <input type="hidden" name="status" value="cancelled">
                         <button type="submit" class="btn btn-ghost btn-sm">Cancel</button>
                     </form>
