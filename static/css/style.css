@@ -25,6 +25,8 @@
     --shadow-lg: 0 16px 40px rgba(28, 43, 74, 0.12);
 
     --container: 1180px;
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -32,6 +34,7 @@
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
 
@@ -87,10 +90,11 @@ img {
 }
 
 /* ============================================
-   Buttons
+   Buttons — soft lift + sheen sweep on hover
    ============================================ */
 
 .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -102,8 +106,28 @@ img {
     font-size: 0.95rem;
     border: 2px solid transparent;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease), border-color 0.25s var(--ease);
     white-space: nowrap;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.35) 45%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.6s var(--ease);
+}
+
+.btn:hover::before {
+    transform: translateX(120%);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.97) !important;
 }
 
 .btn-primary {
@@ -113,7 +137,7 @@ img {
 
 .btn-primary:hover {
     background: var(--accent-dark);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-md);
 }
 
@@ -124,8 +148,10 @@ img {
 }
 
 .btn-ghost:hover {
-    border-color: var(--ink);
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    color: var(--accent-dark);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-lg {
@@ -144,6 +170,7 @@ img {
     background: rgba(234, 247, 243, 0.85);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .navbar-inner {
@@ -177,6 +204,13 @@ img {
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: 800;
+    transition: transform 0.35s var(--ease), border-radius 0.35s var(--ease), background 0.35s var(--ease);
+}
+
+.logo:hover .logo-mark {
+    transform: rotate(90deg) scale(1.08);
+    border-radius: 50%;
+    background: var(--accent-dark);
 }
 
 .nav-links {
@@ -187,8 +221,30 @@ img {
     color: var(--muted);
 }
 
+.nav-links a {
+    position: relative;
+    padding-bottom: 3px;
+    transition: color 0.2s ease;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.25s var(--ease);
+}
+
 .nav-links a:hover {
     color: var(--ink);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .nav-actions {
@@ -233,6 +289,19 @@ img {
 
 .nav-mobile.open {
     display: flex;
+    animation: dropFade 0.25s var(--ease);
+}
+
+@keyframes dropFade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
@@ -493,6 +562,7 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 10px;
+    animation: dropFade 0.35s var(--ease);
 }
 
 /* ============================================
@@ -509,8 +579,30 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     align-items: center;
 }
 
+.hero-text {
+    animation: fadeUp 0.7s var(--ease) both;
+}
+
+.hero-visual {
+    animation: fadeUp 0.7s var(--ease) 0.15s both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .eyebrow {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: var(--accent-soft);
     color: var(--accent-dark);
     font-weight: 700;
@@ -519,6 +611,28 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     padding: 7px 16px;
     border-radius: var(--radius-pill);
     margin-bottom: 20px;
+}
+
+.eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulseDot 1.8s infinite ease-in-out;
+    flex-shrink: 0;
+}
+
+@keyframes pulseDot {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 158, 124, 0.45);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(46, 158, 124, 0);
+    }
 }
 
 .hero-text h1 {
@@ -562,6 +676,24 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     flex-direction: column;
     gap: 12px;
     border: 1px solid var(--border);
+    animation: fadeUp 0.7s var(--ease) 0.15s both, floaty 5s ease-in-out 1s infinite;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.chat-mock:hover {
+    box-shadow: var(--shadow-lg), 0 0 0 6px rgba(46, 158, 124, 0.08);
+}
+
+@keyframes floaty {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 .chat-mock-header {
@@ -586,6 +718,7 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border-radius: var(--radius-md);
     font-size: 0.92rem;
     max-width: 88%;
+    transition: transform 0.2s ease;
 }
 
 .chat-bubble-user {
@@ -712,17 +845,42 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 24px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s ease;
+}
+
+.mini-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s var(--ease);
 }
 
 .mini-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-md);
+    border-color: var(--accent-soft);
+}
+
+.mini-card:hover::before {
+    transform: scaleY(1);
 }
 
 .mini-card h3 {
     font-size: 1.05rem;
     margin-bottom: 8px;
+    transition: color 0.2s ease;
+}
+
+.mini-card:hover h3 {
+    color: var(--accent-dark);
 }
 
 .mini-card p {
@@ -747,6 +905,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     padding: 24px;
     flex: 1;
     min-width: 200px;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
 }
 
 .step-num {
@@ -761,6 +926,12 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-family: var(--font-display);
     font-weight: 700;
     margin-bottom: 14px;
+    transition: transform 0.3s var(--ease), background 0.3s ease;
+}
+
+.step-card:hover .step-num {
+    background: var(--accent);
+    transform: scale(1.12) rotate(-8deg);
 }
 
 .step-card h3 {
@@ -779,6 +950,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     color: var(--accent);
     font-size: 1.3rem;
     font-weight: 700;
+    transition: transform 0.3s ease;
+}
+
+.steps-row:hover .step-arrow {
+    transform: translateX(2px);
 }
 
 /* Plan preview */
@@ -794,12 +970,24 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border: 2px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 32px;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-soft);
 }
 
 .plan-card-premium {
     border-color: var(--ink);
     background: var(--ink);
     color: #fff;
+}
+
+.plan-card-premium:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lg);
 }
 
 .plan-card-premium h3,
@@ -846,6 +1034,7 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     color: var(--muted);
     padding-left: 22px;
     position: relative;
+    transition: transform 0.2s ease;
 }
 
 .plan-card li::before {
@@ -878,6 +1067,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     color: #fff;
     border-radius: var(--radius-md);
     padding: 24px 20px;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s ease;
+}
+
+.pillar-card:hover {
+    transform: translateY(-6px);
+    background: #223a63;
+    box-shadow: var(--shadow-lg);
 }
 
 .pillar-num {
@@ -892,6 +1088,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-weight: 700;
     font-size: 0.85rem;
     margin-bottom: 14px;
+    transition: transform 0.35s var(--ease);
+}
+
+.pillar-card:hover .pillar-num {
+    transform: rotate(360deg);
 }
 
 .pillar-card h3 {
@@ -918,6 +1119,21 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     flex-direction: column;
     align-items: center;
     gap: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.cta-band::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+    top: -100px;
+    right: -80px;
+    border-radius: 50%;
+    pointer-events: none;
 }
 
 .cta-band h2 {
@@ -967,13 +1183,15 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
 }
 
 .footer-col a {
-    display: block;
+    display: inline-block;
     font-size: 0.9rem;
     margin-bottom: 10px;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .footer-col a:hover {
     color: #fff;
+    transform: translateX(3px);
 }
 
 .footer-newsletter p {
@@ -995,6 +1213,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     font-size: 0.85rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.newsletter-form input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.12);
+    outline: none;
 }
 
 .newsletter-form input::placeholder {
@@ -1064,7 +1289,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-size: 0.92rem;
     color: var(--muted);
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease), transform 0.2s ease;
+}
+
+.tier-btn:hover {
+    color: var(--ink);
 }
 
 .tier-btn.active {
@@ -1078,6 +1307,7 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
 
 .tier-panel.active {
     display: block;
+    animation: fadeUp 0.4s var(--ease) both;
 }
 
 .tier-desc {
@@ -1103,13 +1333,14 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s ease;
     position: relative;
 }
 
 .plan-tile:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-md);
+    border-color: var(--accent-soft);
 }
 
 .plan-tile-premium {
@@ -1120,6 +1351,12 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
 .plan-mode-icon {
     font-size: 1.6rem;
     margin-bottom: 6px;
+    display: inline-block;
+    transition: transform 0.3s var(--ease);
+}
+
+.plan-tile:hover .plan-mode-icon {
+    transform: scale(1.15) rotate(-6deg);
 }
 
 .plan-tile h3 {
@@ -1186,10 +1423,21 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     gap: 14px;
     font-weight: 700;
     font-size: 0.92rem;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.reassurance-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
 }
 
 .reassurance-icon {
     font-size: 1.3rem;
+    transition: transform 0.3s var(--ease);
+}
+
+.reassurance-item:hover .reassurance-icon {
+    transform: scale(1.15);
 }
 
 /* ============================================
@@ -1202,10 +1450,12 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     color: var(--accent-dark);
     font-weight: 700;
     font-size: 0.9rem;
+    transition: transform 0.2s ease;
 }
 
 .back-link:hover {
     text-decoration: underline;
+    transform: translateX(-3px);
 }
 
 .doctors-section {
@@ -1231,12 +1481,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     align-items: center;
     gap: 4px;
     position: relative;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s ease;
 }
 
 .doctor-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-md);
+    border-color: var(--accent-soft);
 }
 
 .doctor-card-premium {
@@ -1262,6 +1513,12 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     justify-content: center;
     overflow: hidden;
     margin-bottom: 14px;
+    transition: border-color 0.3s ease, transform 0.3s var(--ease);
+}
+
+.doctor-card:hover .doctor-photo {
+    border-color: var(--accent);
+    transform: scale(1.05);
 }
 
 .doctor-photo img {
@@ -1350,6 +1607,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border-radius: var(--radius-lg);
     padding: 36px;
     box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.booking-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .booking-doctor {
@@ -1436,10 +1698,12 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-family: var(--font-body);
     font-size: 0.95rem;
     color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .booking-time-picker input:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46, 158, 124, 0.15);
     outline: none;
 }
 
@@ -1471,6 +1735,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border-radius: var(--radius-lg);
     padding: 40px 36px;
     box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+    box-shadow: var(--shadow-md);
 }
 
 .auth-card h1 {
@@ -1507,12 +1776,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-family: var(--font-body);
     font-size: 0.95rem;
     color: var(--ink);
-    transition: border-color 0.15s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-form input:focus,
 .auth-form select:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46, 158, 124, 0.15);
     outline: none;
 }
 
@@ -1617,6 +1887,7 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     border-radius: var(--radius-lg);
     padding: 44px 36px;
     box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s var(--ease) both;
 }
 
 .confirmation-check {
@@ -1631,6 +1902,19 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     font-size: 1.6rem;
     font-weight: 700;
     margin-bottom: 18px;
+    animation: popIn 0.5s var(--ease) 0.1s both;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .confirmation-card h1 {
@@ -1716,11 +2000,13 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     grid-template-columns: 2fr 1.2fr 1.4fr 0.8fr 0.9fr;
     align-items: center;
     gap: 16px;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 
 .appointment-row:hover {
     box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+    border-color: var(--accent-soft);
 }
 
 .appointment-doctor {
@@ -1869,9 +2155,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     flex-direction: column;
     gap: 8px;
     box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
 .doctor-stat-card:hover {
+    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
 }
 
@@ -1929,11 +2217,11 @@ body:has(.doctor-dashboard) .professional-trigger:hover {
     grid-template-columns: 1fr 2.5fr;
     gap: 28px;
     align-items: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
 .doctor-appointment-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-md);
 }
 
@@ -2116,7 +2404,12 @@ body:has(.doctor-dashboard) .navbar .nav-toggle span {
     cursor: pointer;
     font-weight: 700;
     font-size: 0.9rem;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.payment-method-option:hover {
+    border-color: var(--accent-soft);
+    transform: translateY(-2px);
 }
 
 .payment-method-option:has(input:checked) {
@@ -2148,8 +2441,12 @@ body:has(.doctor-dashboard) .navbar .nav-toggle span {
     font-size: 1.8rem;
     color: var(--border);
     cursor: pointer;
-    transition: color 0.15s ease;
+    transition: color 0.15s ease, transform 0.15s ease;
     margin: 0;
+}
+
+.star-label:hover {
+    transform: scale(1.15);
 }
 
 .star-rating input:checked~.star-label,
@@ -2167,10 +2464,12 @@ body:has(.doctor-dashboard) .navbar .nav-toggle span {
     font-size: 0.95rem;
     color: var(--ink);
     resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-form textarea:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(46, 158, 124, 0.15);
     outline: none;
 }
 
@@ -2230,6 +2529,7 @@ body:has(.doctor-dashboard) .navbar .nav-toggle span {
     flex-direction: column;
     align-items: center;
     gap: 14px;
+    animation: fadeUp 0.5s var(--ease) both;
 }
 
 .error-code {
