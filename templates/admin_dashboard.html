@@ -4,6 +4,13 @@
 
 {% block content %}
 
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/admin-dashboard.css') }}"
+>
+{% endblock %}
+
 <section class="doctor-dashboard">
 
     <div class="doctor-dashboard-header">

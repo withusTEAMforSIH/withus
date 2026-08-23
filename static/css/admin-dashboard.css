@@ -1,0 +1,842 @@
+/* =========================================================
+   WITHUS — ADMIN DASHBOARD
+   Theme matched to the main WithUS landing page
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   ROOT / PAGE
+   --------------------------------------------------------- */
+
+.doctor-dashboard {
+    min-height: calc(100vh - 84px);
+    background: #eef9f7;
+    color: #1d2d4f;
+
+    padding: 64px clamp(24px, 5vw, 80px) 100px;
+
+    font-family: inherit;
+}
+
+
+/* ---------------------------------------------------------
+   DASHBOARD HEADER
+   --------------------------------------------------------- */
+
+.doctor-dashboard-header {
+    max-width: 1180px;
+    margin: 0 auto 48px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.doctor-dashboard-header > div:first-child {
+    max-width: 720px;
+}
+
+
+/* Eyebrow */
+
+.eyebrow-doctor-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 16px;
+
+    border-radius: 999px;
+
+    background: #c9f2e6;
+    color: #278b70;
+
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.eyebrow-doctor-dashboard::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+    background: #2fa47f;
+}
+
+
+/* Heading */
+
+.doctor-dashboard-header h1 {
+    margin: 20px 0 12px;
+
+    color: #1d2d4f;
+
+    font-size: clamp(38px, 4.2vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+
+    font-weight: 800;
+}
+
+.doctor-dashboard-header p {
+    margin: 0;
+
+    max-width: 650px;
+
+    color: #607792;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* ---------------------------------------------------------
+   ADMIN PROFILE MINI CARD
+   --------------------------------------------------------- */
+
+.doctor-profile-mini {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 12px 17px 12px 12px;
+
+    background: rgba(255, 255, 255, 0.75);
+
+    border: 1px solid #d7ece7;
+    border-radius: 18px;
+
+    box-shadow: 0 8px 30px rgba(38, 91, 82, 0.06);
+}
+
+.doctor-profile-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #2fa47f;
+    color: white;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.doctor-profile-mini strong {
+    display: block;
+
+    color: #1d2d4f;
+
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.doctor-profile-mini span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #72859c;
+
+    font-size: 12px;
+}
+
+
+/* ---------------------------------------------------------
+   STATISTICS
+   --------------------------------------------------------- */
+
+.doctor-dashboard-stats {
+    max-width: 1180px;
+    margin: 0 auto 58px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.doctor-stat-card {
+    position: relative;
+
+    padding: 28px 30px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    border: 1px solid #d7ece7;
+    border-radius: 22px;
+
+    box-shadow:
+        0 12px 35px rgba(36, 82, 75, 0.055);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.doctor-stat-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    right: -35px;
+    bottom: -35px;
+
+    border-radius: 50%;
+
+    background: #dff7ef;
+
+    opacity: 0.8;
+}
+
+.doctor-stat-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #c2e5dc;
+
+    box-shadow:
+        0 18px 42px rgba(36, 82, 75, 0.08);
+}
+
+.doctor-stat-label {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #71859c;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.doctor-stat-card strong {
+    position: relative;
+    z-index: 1;
+
+    display: block;
+
+    color: #1d2d4f;
+
+    font-size: 40px;
+    line-height: 1;
+
+    font-weight: 800;
+}
+
+
+/* ---------------------------------------------------------
+   SECTION HEADER
+   --------------------------------------------------------- */
+
+.section-header {
+    max-width: 1180px;
+    margin: 0 auto 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.section-header h2 {
+    margin: 0;
+
+    color: #1d2d4f;
+
+    font-size: 28px;
+    line-height: 1.2;
+
+    letter-spacing: -0.025em;
+
+    font-weight: 800;
+}
+
+
+/* ---------------------------------------------------------
+   PRIMARY BUTTON
+   --------------------------------------------------------- */
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 48px;
+
+    padding: 0 22px;
+
+    border-radius: 999px;
+
+    background: #1d2d4f;
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    box-shadow: 0 8px 20px rgba(29, 45, 79, 0.12);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #263a61;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 12px 25px rgba(29, 45, 79, 0.16);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+
+/* ---------------------------------------------------------
+   DOCTORS SECTION
+   --------------------------------------------------------- */
+
+.doctor-appointments-section {
+    max-width: 1180px;
+    margin: 0 auto;
+
+    padding: 34px;
+
+    background: rgba(255, 255, 255, 0.55);
+
+    border: 1px solid #d7ece7;
+    border-radius: 28px;
+
+    box-shadow:
+        0 14px 40px rgba(36, 82, 75, 0.045);
+}
+
+
+/* Section heading */
+
+.doctor-section-heading {
+    margin-bottom: 30px;
+}
+
+.doctor-section-index {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    color: #2fa47f;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.doctor-section-heading h2 {
+    margin: 0 0 7px;
+
+    color: #1d2d4f;
+
+    font-size: 25px;
+    line-height: 1.25;
+
+    letter-spacing: -0.02em;
+
+    font-weight: 800;
+}
+
+.doctor-section-heading p {
+    margin: 0;
+
+    color: #71859c;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR LIST
+   --------------------------------------------------------- */
+
+.doctor-appointment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR CARD
+   --------------------------------------------------------- */
+
+.doctor-appointment-card {
+    display: grid;
+
+    grid-template-columns:
+        minmax(240px, 1.3fr)
+        minmax(360px, 2fr)
+        auto;
+
+    align-items: center;
+
+    gap: 28px;
+
+    padding: 20px 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dcece9;
+    border-radius: 20px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.doctor-appointment-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #c8e5dd;
+
+    box-shadow:
+        0 10px 28px rgba(36, 82, 75, 0.07);
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR MAIN INFO
+   --------------------------------------------------------- */
+
+.doctor-appointment-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    min-width: 0;
+}
+
+
+/* Avatar */
+
+.patient-avatar {
+    flex: 0 0 auto;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #d9f4ec;
+    color: #278d71;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.patient-info {
+    min-width: 0;
+}
+
+.patient-info h3 {
+    margin: 0 0 4px;
+
+    color: #1d2d4f;
+
+    font-size: 15px;
+    line-height: 1.3;
+
+    font-weight: 750;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.patient-info span {
+    display: block;
+
+    color: #7a8ca1;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR INFORMATION
+   --------------------------------------------------------- */
+
+.doctor-appointment-info {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+
+    gap: 20px;
+}
+
+.doctor-info-item {
+    min-width: 0;
+}
+
+.doctor-info-item span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #8999aa;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.doctor-info-item strong {
+    display: block;
+
+    color: #344966;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ---------------------------------------------------------
+   STATUS STYLING
+   --------------------------------------------------------- */
+
+.doctor-info-item:nth-child(2) strong {
+    color: #2a9776;
+}
+
+
+/* ---------------------------------------------------------
+   EDIT BUTTON
+   --------------------------------------------------------- */
+
+.doctor-appointment-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.admin-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 68px;
+    height: 40px;
+
+    padding: 0 16px;
+
+    border: 1px solid #cfe8e1;
+    border-radius: 999px;
+
+    background: #f3fbf9;
+    color: #2a8069;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-edit-btn:hover {
+    background: #2fa47f;
+    border-color: #2fa47f;
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+
+.doctor-empty-state {
+    padding: 65px 30px;
+
+    text-align: center;
+
+    background: rgba(255, 255, 255, 0.7);
+
+    border: 1px dashed #c8e4dc;
+    border-radius: 20px;
+}
+
+.doctor-empty-icon {
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: #d9f4ec;
+    color: #2fa47f;
+
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.doctor-empty-state h3 {
+    margin: 0 0 7px;
+
+    color: #1d2d4f;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.doctor-empty-state p {
+    margin: 0;
+
+    color: #788ba0;
+
+    font-size: 14px;
+}
+
+
+/* ---------------------------------------------------------
+   FOCUS STATES
+   --------------------------------------------------------- */
+
+.btn-primary:focus-visible,
+.admin-edit-btn:focus-visible {
+    outline: 3px solid rgba(47, 164, 127, 0.25);
+    outline-offset: 3px;
+}
+
+
+/* ---------------------------------------------------------
+   TABLET
+   --------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+
+    .doctor-dashboard {
+        padding: 50px 28px 80px;
+    }
+
+    .doctor-dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .doctor-profile-mini {
+        align-self: flex-start;
+    }
+
+    .doctor-appointment-card {
+        grid-template-columns: 1fr auto;
+    }
+
+    .doctor-appointment-info {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .doctor-appointment-actions {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+    .doctor-dashboard {
+        min-height: calc(100vh - 70px);
+
+        padding: 38px 18px 60px;
+    }
+
+
+    /* Header */
+
+    .doctor-dashboard-header {
+        margin-bottom: 35px;
+
+        gap: 25px;
+    }
+
+    .doctor-dashboard-header h1 {
+        margin-top: 16px;
+
+        font-size: 38px;
+    }
+
+    .doctor-dashboard-header p {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .doctor-profile-mini {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* Stats */
+
+    .doctor-dashboard-stats {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+
+        margin-bottom: 40px;
+    }
+
+    .doctor-stat-card {
+        padding: 23px 24px;
+    }
+
+    .doctor-stat-card strong {
+        font-size: 34px;
+    }
+
+
+    /* Section header */
+
+    .section-header {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+        font-size: 25px;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+
+    /* Main section */
+
+    .doctor-appointments-section {
+        padding: 22px 15px;
+
+        border-radius: 22px;
+    }
+
+    .doctor-section-heading {
+        padding: 0 5px;
+        margin-bottom: 22px;
+    }
+
+
+    /* Doctor cards */
+
+    .doctor-appointment-card {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 18px;
+
+        padding: 18px;
+
+        border-radius: 18px;
+    }
+
+    .doctor-appointment-main {
+        width: 100%;
+    }
+
+    .doctor-appointment-info {
+        width: 100%;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 15px;
+    }
+
+    .doctor-appointment-actions {
+        width: 100%;
+    }
+
+    .admin-edit-btn {
+        width: 100%;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   SMALL MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 420px) {
+
+    .doctor-dashboard {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .doctor-dashboard-header h1 {
+        font-size: 34px;
+    }
+
+    .doctor-appointment-info {
+        gap: 13px;
+    }
+
+    .doctor-info-item strong {
+        font-size: 12px;
+    }
+
+    .doctor-appointments-section {
+        padding: 18px 12px;
+    }
+}
