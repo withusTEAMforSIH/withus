@@ -987,9 +987,7 @@ def handle_call_end(data):
     )
 
 
-
- 
-
-
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+   with app.app_context():
+       db.create_all()
+   socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), allow_unsafe_werkzeug=True)

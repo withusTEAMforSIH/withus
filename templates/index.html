@@ -1,179 +1,686 @@
 {% extends "base.html" %}
 
-{% block title %}WithUS — What if asking for help didn't have to feel awkward?{% endblock %}
+{% block title %}
+WithUS — What if asking for help didn't have to feel awkward?
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/intro.css') }}"
+>
+
+{% endblock %}
+
 
 {% block content %}
 
-<section class="hero">
-    <div class="hero-text">
-        <span class="eyebrow">Private healthcare, without the awkwardness</span>
-        <h1>What if asking for help<br>didn't have to feel <em>awkward?</em></h1>
-        <p class="hero-sub">
-            Private, judgment-free health guidance — chat, call, or video with a
-            real doctor, entirely on your terms.
-        </p>
-        <div class="hero-actions">
-            <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">Get started →</a>
-            <a href="#how-it-works" class="btn btn-ghost btn-lg">See how it works</a>
+<!-- =========================================================
+     WITHUS INTRO
+     ========================================================= -->
+
+<section
+    class="intro-scroller"
+    id="introScroller"
+>
+
+    <div class="intro-viewport">
+
+        <div
+            class="intro-word"
+            id="introWord"
+            aria-label="WithUS"
+        >
+
+            <span
+                class="intro-letter"
+                data-letter="0"
+            >W</span>
+
+            <span
+                class="intro-letter"
+                data-letter="1"
+            >I</span>
+
+            <span
+                class="intro-letter"
+                data-letter="2"
+            >T</span>
+
+            <span
+                class="intro-letter"
+                data-letter="3"
+            >H</span>
+
+            <span
+                class="intro-letter"
+                data-letter="4"
+            >U</span>
+
+            <span
+                class="intro-letter"
+                data-letter="5"
+            >S</span>
+
         </div>
+
+
+        <!-- SCROLL HINT -->
+
+        <div class="intro-scroll-hint">
+            <span>Scroll to begin</span>
+        </div>
+
     </div>
 
+</section>
+
+
+<!-- =========================================================
+     HERO
+     ========================================================= -->
+
+<section class="hero">
+
+    <div class="hero-text">
+
+        <span class="eyebrow">
+            Private healthcare, without the awkwardness
+        </span>
+
+        <h1>
+            What if asking for help<br>
+            didn't have to feel <em>awkward?</em>
+        </h1>
+
+        <p class="hero-sub">
+            Private, judgment-free health guidance —
+            chat, call, or video with a real doctor,
+            entirely on your terms.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="{{ url_for('signup') }}"
+                class="btn btn-primary btn-lg"
+            >
+                Get started →
+            </a>
+
+            <a
+                href="#how-it-works"
+                class="btn btn-ghost btn-lg"
+            >
+                See how it works
+            </a>
+
+        </div>
+
+    </div>
+
+
     <div class="hero-visual">
+
         <div class="chat-mock">
 
             <div class="chat-mock-header">
-                <span class="dot"></span> Ask privately
+                <span class="dot"></span>
+                Ask privately
             </div>
 
-            <div class="chat-mock-messages" id="chatMockMessages">
+
+            <div
+                class="chat-mock-messages"
+                id="chatMockMessages"
+            >
+
                 <div class="chat-bubble chat-bubble-doc">
-                    Hi — you can ask me anything privately. I'm not a doctor,
-                    but I can point you in the right direction.
+
+                    Hi — you can ask me anything privately.
+                    I'm not a doctor, but I can point you
+                    in the right direction.
+
                 </div>
+
             </div>
 
-            <form id="chatMockForm" class="chat-mock-input-row">
-                <input type="text" id="chatMockInput" placeholder="Ask something privately..." maxlength="500"
-                    autocomplete="off" required>
-                <button type="submit" aria-label="Send">→</button>
+
+            <form
+                id="chatMockForm"
+                class="chat-mock-input-row"
+            >
+
+                <input
+                    type="text"
+                    id="chatMockInput"
+                    placeholder="Ask something privately..."
+                    maxlength="500"
+                    autocomplete="off"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    aria-label="Send"
+                >
+                    →
+                </button>
+
             </form>
 
+
             <p class="chat-mock-disclaimer">
+
                 General guidance only — not a diagnosis.
-                <a href="{{ url_for('signup') }}">Talk to a real doctor →</a>
+
+                <a href="{{ url_for('signup') }}">
+                    Talk to a real doctor →
+                </a>
+
             </p>
 
         </div>
+
     </div>
+
 </section>
 
-<section class="section" id="problem">
-    <span class="section-index">01</span>
-    <h2>The problem</h2>
+
+<!-- =========================================================
+     THE PROBLEM
+     ========================================================= -->
+
+<section
+    class="section"
+    id="problem"
+>
+
+    <span class="section-index">
+        01
+    </span>
+
+    <h2>
+        The problem
+    </h2>
+
     <p class="section-lede">
-        Having a health concern shouldn't mean navigating the internet alone.
-        Sensitive questions are hard to say out loud — so most people just don't.
+
+        Having a health concern shouldn't mean
+        navigating the internet alone.
+
+        Sensitive questions are hard to say out loud —
+        so most people just don't.
+
     </p>
+
+
     <div class="grid-4">
+
         <div class="mini-card">
-            <h3>Difficult to discuss</h3>
-            <p>Sensitive health concerns are hard to bring up out loud, even with a doctor.</p>
+
+            <h3>
+                Difficult to discuss
+            </h3>
+
+            <p>
+                Sensitive health concerns are hard to bring
+                up out loud, even with a doctor.
+            </p>
+
         </div>
+
+
         <div class="mini-card">
-            <h3>Unreliable information</h3>
-            <p>Young people often land on conflicting or unreliable advice online.</p>
+
+            <h3>
+                Unreliable information
+            </h3>
+
+            <p>
+                Young people often land on conflicting
+                or unreliable advice online.
+            </p>
+
         </div>
+
+
         <div class="mini-card">
-            <h3>Unclear next steps</h3>
-            <p>Many don't know whether a concern needs professional attention at all.</p>
+
+            <h3>
+                Unclear next steps
+            </h3>
+
+            <p>
+                Many don't know whether a concern needs
+                professional attention at all.
+            </p>
+
         </div>
+
+
         <div class="mini-card">
-            <h3>Late-stage care</h3>
-            <p>Healthcare often starts only after someone has already decided to seek it.</p>
+
+            <h3>
+                Late-stage care
+            </h3>
+
+            <p>
+                Healthcare often starts only after someone
+                has already decided to seek it.
+            </p>
+
         </div>
+
     </div>
+
 </section>
 
-<section class="section section-alt" id="how-it-works">
-    <span class="section-index">02</span>
-    <h2>How it works</h2>
-    <p class="section-lede">A care journey built around the person — not the appointment.</p>
+
+<!-- =========================================================
+     HOW IT WORKS
+     ========================================================= -->
+
+<section
+    class="section section-alt"
+    id="how-it-works"
+>
+
+    <span class="section-index">
+        02
+    </span>
+
+    <h2>
+        How it works
+    </h2>
+
+    <p class="section-lede">
+        A care journey built around the person —
+        not the appointment.
+    </p>
+
 
     <div class="steps-row">
+
         <div class="step-card">
-            <span class="step-num">1</span>
-            <h3>Choose a plan</h3>
-            <p>Pick basic or premium, and your preferred way to talk — chat, voice, or video.</p>
+
+            <span class="step-num">
+                1
+            </span>
+
+            <h3>
+                Choose a plan
+            </h3>
+
+            <p>
+                Pick basic or premium, and your preferred
+                way to talk — chat, voice, or video.
+            </p>
+
         </div>
-        <div class="step-arrow">→</div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
         <div class="step-card">
-            <span class="step-num">2</span>
-            <h3>Pick a doctor</h3>
-            <p>See real names, specialties, and ratings. No anonymous queue.</p>
+
+            <span class="step-num">
+                2
+            </span>
+
+            <h3>
+                Pick a doctor
+            </h3>
+
+            <p>
+                See real names, specialties, and ratings.
+                No anonymous queue.
+            </p>
+
         </div>
-        <div class="step-arrow">→</div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
         <div class="step-card">
-            <span class="step-num">3</span>
-            <h3>Talk, privately</h3>
-            <p>Ask what's on your mind, judgment-free, on the medium you're comfortable with.</p>
+
+            <span class="step-num">
+                3
+            </span>
+
+            <h3>
+                Talk, privately
+            </h3>
+
+            <p>
+                Ask what's on your mind, judgment-free,
+                on the medium you're comfortable with.
+            </p>
+
         </div>
-        <div class="step-arrow">→</div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
         <div class="step-card">
-            <span class="step-num">4</span>
-            <h3>Act with clarity</h3>
-            <p>Leave with a clear next step — whether that's a follow-up or peace of mind.</p>
+
+            <span class="step-num">
+                4
+            </span>
+
+            <h3>
+                Act with clarity
+            </h3>
+
+            <p>
+                Leave with a clear next step —
+                whether that's a follow-up or peace of mind.
+            </p>
+
         </div>
+
     </div>
+
 </section>
 
-<section class="section" id="plans-preview">
-    <span class="section-index">03</span>
-    <h2>Simple, honest pricing</h2>
-    <p class="section-lede">No hidden fees. Pick what fits, upgrade only if you want to.</p>
+
+<!-- =========================================================
+     PLANS
+     ========================================================= -->
+
+<section
+    class="section"
+    id="plans-preview"
+>
+
+    <span class="section-index">
+        03
+    </span>
+
+    <h2>
+        Simple, honest pricing
+    </h2>
+
+    <p class="section-lede">
+        No hidden fees. Pick what fits,
+        upgrade only if you want to.
+    </p>
+
 
     <div class="plan-preview-grid">
+
         <div class="plan-card">
-            <span class="plan-tag">Basic</span>
-            <h3>From ₹99</h3>
-            <p>Talk to an available, qualified doctor via chat, voice, or video.</p>
+
+            <span class="plan-tag">
+                Basic
+            </span>
+
+            <h3>
+                From ₹99
+            </h3>
+
+            <p>
+                Talk to an available, qualified doctor
+                via chat, voice, or video.
+            </p>
+
             <ul>
-                <li>Choose from 4–5 available doctors</li>
-                <li>Chat, voice, or video</li>
-                <li>Fast, private, judgment-free</li>
+
+                <li>
+                    Choose from 4–5 available doctors
+                </li>
+
+                <li>
+                    Chat, voice, or video
+                </li>
+
+                <li>
+                    Fast, private, judgment-free
+                </li>
+
             </ul>
-            <a href="{{ url_for('plans') }}" class="btn btn-ghost">See basic plans</a>
+
+            <a
+                href="{{ url_for('plans') }}"
+                class="btn btn-ghost"
+            >
+                See basic plans
+            </a>
+
         </div>
+
+
         <div class="plan-card plan-card-premium">
-            <span class="plan-tag plan-tag-premium">Premium</span>
-            <h3>From ₹149</h3>
-            <p>Talk to the doctors patients choose most — still at a decent price.</p>
+
+            <span class="plan-tag plan-tag-premium">
+                Premium
+            </span>
+
+            <h3>
+                From ₹149
+            </h3>
+
+            <p>
+                Talk to the doctors patients choose most —
+                still at a decent price.
+            </p>
+
             <ul>
-                <li>Top 5 most-preferred doctors</li>
-                <li>Same privacy, higher demand</li>
-                <li>Chat, voice, or video</li>
+
+                <li>
+                    Top 5 most-preferred doctors
+                </li>
+
+                <li>
+                    Same privacy, higher demand
+                </li>
+
+                <li>
+                    Chat, voice, or video
+                </li>
+
             </ul>
-            <a href="{{ url_for('plans') }}" class="btn btn-primary">See premium plans</a>
+
+            <a
+                href="{{ url_for('plans') }}"
+                class="btn btn-primary"
+            >
+                See premium plans
+            </a>
+
         </div>
+
     </div>
+
 </section>
 
-<section class="section section-alt" id="why-us">
-    <span class="section-index">04</span>
-    <h2>Why WithUS</h2>
-    <p class="section-lede">Built around the first question, not the final diagnosis.</p>
+
+<!-- =========================================================
+     WHY WITHUS
+     ========================================================= -->
+
+<section
+    class="section section-alt"
+    id="why-us"
+>
+
+    <span class="section-index">
+        04
+    </span>
+
+    <h2>
+        Why WithUS
+    </h2>
+
+    <p class="section-lede">
+        Built around the first question,
+        not the final diagnosis.
+    </p>
+
 
     <div class="grid-5">
+
         <div class="pillar-card">
-            <span class="pillar-num">1</span>
-            <h3>Privacy-first</h3>
-            <p>A judgment-free space to ask what you'd never ask out loud.</p>
+
+            <span class="pillar-num">
+                1
+            </span>
+
+            <h3>
+                Privacy-first
+            </h3>
+
+            <p>
+                A judgment-free space to ask
+                what you'd never ask out loud.
+            </p>
+
         </div>
+
+
         <div class="pillar-card">
-            <span class="pillar-num">2</span>
-            <h3>Youth-first</h3>
-            <p>Designed around how young people actually talk and think about health.</p>
+
+            <span class="pillar-num">
+                2
+            </span>
+
+            <h3>
+                Youth-first
+            </h3>
+
+            <p>
+                Designed around how young people
+                actually talk and think about health.
+            </p>
+
         </div>
+
+
         <div class="pillar-card">
-            <span class="pillar-num">3</span>
-            <h3>Trusted</h3>
-            <p>Verified, qualified doctors — never anonymous, never guesswork.</p>
+
+            <span class="pillar-num">
+                3
+            </span>
+
+            <h3>
+                Trusted
+            </h3>
+
+            <p>
+                Verified, qualified doctors —
+                never anonymous, never guesswork.
+            </p>
+
         </div>
+
+
         <div class="pillar-card">
-            <span class="pillar-num">4</span>
-            <h3>Action-oriented</h3>
-            <p>Every conversation ends with a clear, concrete next step.</p>
+
+            <span class="pillar-num">
+                4
+            </span>
+
+            <h3>
+                Action-oriented
+            </h3>
+
+            <p>
+                Every conversation ends with
+                a clear, concrete next step.
+            </p>
+
         </div>
+
+
         <div class="pillar-card">
-            <span class="pillar-num">5</span>
-            <h3>Preventive</h3>
-            <p>Early awareness, before small concerns become bigger problems.</p>
+
+            <span class="pillar-num">
+                5
+            </span>
+
+            <h3>
+                Preventive
+            </h3>
+
+            <p>
+                Early awareness, before small
+                concerns become bigger problems.
+            </p>
+
         </div>
+
     </div>
+
 </section>
 
+
+<!-- =========================================================
+     CTA
+     ========================================================= -->
+
 <section class="cta-band">
-    <h2>People don't avoid healthcare.<br>They avoid the friction around it.</h2>
-    <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">Get started →</a>
+
+    <h2>
+        People don't avoid healthcare.<br>
+        They avoid the friction around it.
+    </h2>
+
+    <a
+        href="{{ url_for('signup') }}"
+        class="btn btn-primary btn-lg"
+    >
+        Get started →
+    </a>
+
 </section>
+
+{% endblock %}
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+{% block extra_js %}
+
+<script>
+(function () {
+
+    var reduced =
+        window.matchMedia &&
+        window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+    var intro =
+        document.getElementById(
+            "introScroller"
+        );
+
+    if (
+        intro &&
+        !reduced
+    ) {
+        intro.style.display = "block";
+    }
+
+})();
+</script>
+
+
+<script
+    src="{{ url_for('static', filename='js/intro-experience.js') }}"
+></script>
 
 {% endblock %}

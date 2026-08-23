@@ -5,3 +5,4 @@ dotenv
 pymysql==1.1.1
 anthropic
 cryptography
+google-genai
