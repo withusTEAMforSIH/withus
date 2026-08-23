@@ -650,9 +650,10 @@ def edit_doctor(doctor_id):
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
         specialty = request.form.get('specialty', '').strip()
-        
+        new_password = request.form.get('password', '').strip()
 
         is_active = request.form.get('is_active') == '1'
+        verified = request.form.get('verified') == '1'
 
         offers_chat = request.form.get('offers_chat') == '1'
         offers_voice = request.form.get('offers_voice') == '1'
@@ -662,6 +663,13 @@ def edit_doctor(doctor_id):
         if not name or not email or not specialty:
             flash('Name, email and specialty are required.')
             return redirect(url_for('edit_doctor', doctor_id=doctor.id))
+
+        # Optional password reset — only touched if admin actually typed one
+        if new_password:
+            if len(new_password) < 6:
+                flash('Password must be at least 6 characters.')
+                return redirect(url_for('edit_doctor', doctor_id=doctor.id))
+            doctor.password_hash = generate_password_hash(new_password)
 
         # Check whether another doctor already uses this email
         existing_doctor = Doctor.query.filter(
@@ -677,10 +685,8 @@ def edit_doctor(doctor_id):
         doctor.email = email
         doctor.specialty = specialty
 
-         
-         
-
         doctor.is_active = is_active
+        doctor.verified = verified
 
         doctor.offers_chat = offers_chat
         doctor.offers_voice = offers_voice

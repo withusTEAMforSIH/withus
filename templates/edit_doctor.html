@@ -1,285 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Edit Doctor | WithUS</title>
+{% block title %}Edit Doctor{% endblock %}
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+{% block content %}
+<div class="min-h-screen bg-emerald-50 px-6 py-10">
 
-<body>
-
-<nav class="navbar">
-    <div class="navbar-inner">
-
-        <a href="{{ url_for('admin_dashboard') }}" class="logo">
-            <span class="logo-mark">+</span>
-            WithUS
-        </a>
-
-        <div class="nav-actions">
-            <a href="{{ url_for('admin_dashboard') }}"
-               class="btn btn-ghost">
-                Dashboard
-            </a>
-
-            <a href="{{ url_for('logout') }}"
-               class="btn btn-primary">
-                Log out
-            </a>
-        </div>
-
-    </div>
-</nav>
-
-
-<main class="admin-edit-section">
-
-    <a href="{{ url_for('admin_dashboard') }}"
-       class="back-link">
-        ← Back to Admin Dashboard
+  <div class="max-w-2xl mx-auto mb-6">
+    <a href="{{ url_for('admin_dashboard') }}" class="text-emerald-700 font-medium hover:underline">
+      &larr; Back to Admin Dashboard
     </a>
+  </div>
 
+  <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-10">
 
-    <div class="admin-edit-card">
+    <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+      DOCTOR MANAGEMENT
+    </span>
 
-        <div class="admin-edit-header">
+    <h1 class="text-3xl font-bold text-slate-900 mt-4">Edit Doctor</h1>
+    <p class="text-slate-500 mt-1 mb-8">Update the doctor's information and account status.</p>
 
-            <span class="eyebrow">
-                DOCTOR MANAGEMENT
-            </span>
-
-            <h1>Edit Doctor</h1>
-
-            <p>
-                Update the doctor's information and account status.
-            </p>
-
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-6 space-y-2">
+          {% for message in messages %}
+            <div class="bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-xl">
+              {{ message }}
+            </div>
+          {% endfor %}
         </div>
-
-
-        <form method="POST"
-              class="admin-doctor-form">
-
-
-            <!-- NAME -->
-
-            <div class="admin-form-group">
-
-                <label for="name">
-                    Doctor Name
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="{{ doctor.name }}"
-                    required
-                >
-
-            </div>
-
-
-            <!-- EMAIL -->
-
-            <div class="admin-form-group">
-
-                <label for="email">
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ doctor.email }}"
-                    required
-                >
-
-            </div>
-
-
-            <!-- PHONE -->
-
-            <div class="admin-form-group">
-
-                <label for="phone">
-                    Phone
-                </label>
-
-                <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    value="{{ doctor.phone or '' }}"
-                >
-
-            </div>
-
-
-            <!-- SPECIALTY -->
-
-            <div class="admin-form-group">
-
-                <label for="specialty">
-                    Specialty
-                </label>
-
-                <input
-                    type="text"
-                    id="specialty"
-                    name="specialty"
-                    value="{{ doctor.specialty }}"
-                    required
-                >
-
-            </div>
-
-
-            <!-- STATUS -->
-
-            <div class="admin-form-group">
-
-                <label for="is_active">
-                    Account Status
-                </label>
-
-                <select
-                    id="is_active"
-                    name="is_active"
-                >
-
-                    <option value="1"
-                        {% if doctor.is_active %}
-                            selected
-                        {% endif %}>
-                        Active
-                    </option>
-
-                    <option value="0"
-                        {% if not doctor.is_active %}
-                            selected
-                        {% endif %}>
-                        Inactive
-                    </option>
-
-                </select>
-
-                <small>
-                    Inactive doctors cannot log in or receive new appointments.
-                </small>
-
-            </div>
-
-
-            <!-- SERVICES -->
-
-            <div class="admin-form-group">
-
-                <label>
-                    Available Services
-                </label>
-
-                <div class="admin-checkbox-row">
-
-                    <label class="admin-checkbox">
-
-                        <input
-                            type="checkbox"
-                            name="offers_chat"
-                            value="1"
-                            {% if doctor.offers_chat %}
-                                checked
-                            {% endif %}
-                        >
-
-                        <span>Chat</span>
-
-                    </label>
-
-
-                    <label class="admin-checkbox">
-
-                        <input
-                            type="checkbox"
-                            name="offers_voice"
-                            value="1"
-                            {% if doctor.offers_voice %}
-                                checked
-                            {% endif %}
-                        >
-
-                        <span>Voice</span>
-
-                    </label>
-
-
-                    <label class="admin-checkbox">
-
-                        <input
-                            type="checkbox"
-                            name="offers_video"
-                            value="1"
-                            {% if doctor.offers_video %}
-                                checked
-                            {% endif %}
-                        >
-
-                        <span>Video</span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <!-- EXISTING DATA -->
-
-            <div class="admin-readonly-info">
-
-                <div>
-                    <span>Total Bookings</span>
-                    <strong>{{ doctor.booking_count }}</strong>
-                </div>
-
-                <div>
-                    <span>Rating</span>
-                    <strong>{{ doctor.rating }}</strong>
-                </div>
-
-                <div>
-                    <span>Tier</span>
-                    <strong>{{ doctor.tier|capitalize }}</strong>
-                </div>
-
-            </div>
-
-
-            <div class="admin-form-actions">
-
-                <a href="{{ url_for('admin_dashboard') }}"
-                   class="btn btn-ghost">
-                    Cancel
-                </a>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-                    Update Doctor
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</main>
-
-</body>
-</html>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('edit_doctor', doctor_id=doctor.id) }}" class="space-y-6">
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">Doctor Name</label>
+        <input type="text" name="name" value="{{ doctor.name }}" required
+               class="w-full bg-emerald-50 border-0 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+        <input type="email" name="email" value="{{ doctor.email }}" required
+               class="w-full bg-emerald-50 border-0 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">Specialty</label>
+        <input type="text" name="specialty" value="{{ doctor.specialty }}" required
+               class="w-full bg-emerald-50 border-0 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">Reset Password</label>
+        <input type="password" name="password" placeholder="Leave blank to keep current password"
+               minlength="6" autocomplete="new-password"
+               class="w-full bg-emerald-50 border-0 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+        <p class="text-xs text-slate-400 mt-1">Only fill this in if you want to set a new password (min 6 characters).</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <label class="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3 cursor-pointer">
+          <input type="checkbox" name="is_active" value="1" {% if doctor.is_active %}checked{% endif %}
+                 class="w-4 h-4 accent-emerald-600">
+          <span class="text-sm font-medium text-slate-700">Active</span>
+        </label>
+
+        <label class="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3 cursor-pointer">
+          <input type="checkbox" name="verified" value="1" {% if doctor.verified %}checked{% endif %}
+                 class="w-4 h-4 accent-emerald-600">
+          <span class="text-sm font-medium text-slate-700">Verified</span>
+        </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">Consultation modes offered</label>
+        <div class="grid grid-cols-3 gap-4">
+          <label class="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3 cursor-pointer">
+            <input type="checkbox" name="offers_chat" value="1" {% if doctor.offers_chat %}checked{% endif %}
+                   class="w-4 h-4 accent-emerald-600">
+            <span class="text-sm font-medium text-slate-700">Chat</span>
+          </label>
+
+          <label class="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3 cursor-pointer">
+            <input type="checkbox" name="offers_voice" value="1" {% if doctor.offers_voice %}checked{% endif %}
+                   class="w-4 h-4 accent-emerald-600">
+            <span class="text-sm font-medium text-slate-700">Voice</span>
+          </label>
+
+          <label class="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3 cursor-pointer">
+            <input type="checkbox" name="offers_video" value="1" {% if doctor.offers_video %}checked{% endif %}
+                   class="w-4 h-4 accent-emerald-600">
+            <span class="text-sm font-medium text-slate-700">Video</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 pt-4">
+        <button type="submit"
+                class="bg-slate-900 text-white font-semibold px-6 py-3 rounded-xl hover:bg-slate-800 transition">
+          Save Changes
+        </button>
+        <a href="{{ url_for('admin_dashboard') }}"
+           class="text-slate-500 font-medium px-6 py-3 hover:text-slate-700">
+          Cancel
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
