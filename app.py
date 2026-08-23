@@ -1,10 +1,11 @@
-import os , anthropic
+import os 
 from flask import Flask, render_template, request, redirect, url_for, session, flash , jsonify
 from flask_socketio import SocketIO, join_room, emit
 from models import db, User, Admin, Doctor, Plan, Appointment, Payment, Review ,ChatMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 DB_PORT = os.environ.get('DB_PORT')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -56,16 +57,7 @@ def recompute_doctor_rating(doctor):
 def index():
     return render_template('index.html')
 
-
-
-
-# ============================================
-# Homepage AI chatbot (public, pre-screening only)
-# ============================================
-
-anthropic_client = anthropic.Anthropic(
-    api_key=os.getenv('ANTHROPIC_API_KEY')
-)
+gemini_client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
 CHATBOT_SYSTEM_PROMPT = """You are the WithUS homepage assistant.
 
@@ -86,14 +78,12 @@ Rules you must always follow:
   to contact local emergency services immediately.
 """
 
-# Very basic in-memory rate limiting per session.
-# For production with multiple server workers, replace with Redis.
 from collections import defaultdict
 import time
 
 _chat_rate_limit = defaultdict(list)
 RATE_LIMIT_MAX_MESSAGES = 15
-RATE_LIMIT_WINDOW_SECONDS = 600  # 10 minutes
+RATE_LIMIT_WINDOW_SECONDS = 600
 
 
 @app.route('/api/chatbot', methods=['POST'])
@@ -109,7 +99,6 @@ def chatbot():
     if len(user_message) > 500:
         return jsonify({'error': 'Message too long'}), 400
 
-    # Rate limit by session (Flask session cookie, works for anonymous visitors too)
     if 'chat_session_id' not in session:
         session['chat_session_id'] = os.urandom(8).hex()
 
@@ -129,27 +118,30 @@ def chatbot():
 
     _chat_rate_limit[session_id].append(now)
 
-    # Build message history for the API (cap length to keep cost/context sane)
-    api_messages = []
+    # Build conversation as a single text block for Gemini
+    # (Gemini's chat history format differs slightly from Anthropic's)
+    conversation_text = ""
     for turn in history[-6:]:
         role = turn.get('role')
         content = turn.get('content', '')
-        if role in ('user', 'assistant') and content:
-            api_messages.append({'role': role, 'content': content})
+        if role == 'user':
+            conversation_text += f"Patient: {content}\n"
+        elif role == 'assistant':
+            conversation_text += f"Assistant: {content}\n"
 
-    api_messages.append({'role': 'user', 'content': user_message})
+    conversation_text += f"Patient: {user_message}\nAssistant:"
 
     try:
-        response = anthropic_client.messages.create(
-            model='claude-haiku-4-5-20251001',
-            max_tokens=200,
-            system=CHATBOT_SYSTEM_PROMPT,
-            messages=api_messages
+        response = gemini_client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=conversation_text,
+            config={
+                'system_instruction': CHATBOT_SYSTEM_PROMPT,
+                'max_output_tokens': 200
+            }
         )
 
-        reply_text = ''.join(
-            block.text for block in response.content if block.type == 'text'
-        )
+        reply_text = response.text
 
     except Exception as e:
         app.logger.error(f'Chatbot API error: {e}')
@@ -158,7 +150,8 @@ def chatbot():
             'reply': "Sorry, I'm having trouble responding right now. Please try again shortly."
         }), 500
 
-    return jsonify({'reply': reply_text})    
+    return jsonify({'reply': reply_text})
+  
 
 
 # ============================================
@@ -999,4 +992,4 @@ def handle_call_end(data):
 
 
 if __name__ == '__main__':
-   socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True)
